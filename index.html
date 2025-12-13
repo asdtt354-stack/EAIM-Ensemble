@@ -11,12 +11,37 @@
         }
         body {
             font-family: 'Jua', sans-serif; background-color: var(--bg);
-            color: var(--text); margin: 0; padding: 20px; text-align: center; user-select: none;
+            color: var(--text); margin: 0; padding: 0; text-align: center; user-select: none;
         }
         .hidden { display: none !important; }
+        
+        /* Intro Overlay Styles */
+        #intro-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #74b9ff, #6C5CE7);
+            z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; color: white;
+            padding: 20px; box-sizing: border-box;
+        }
+        .intro-box {
+            background: rgba(255, 255, 255, 0.2); padding: 30px; border-radius: 20px;
+            backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            max-width: 600px; width: 90%;
+        }
+        .intro-title { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .intro-desc { font-size: 1.2em; margin-bottom: 30px; line-height: 1.6; }
+        .intro-steps { text-align: left; margin-bottom: 30px; background: rgba(0,0,0,0.1); padding: 15px; border-radius: 10px; }
+        .btn-start {
+            background: #ffeaa7; color: #2d3436; border: none; padding: 15px 40px;
+            font-size: 1.5em; border-radius: 50px; cursor: pointer; font-family: 'Jua';
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: transform 0.2s;
+        }
+        .btn-start:hover { transform: scale(1.05); background: #fff; }
+
+        /* Main Workspace Styles */
         .workspace {
             background: white; padding: 25px; border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); max-width: 700px; margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); max-width: 700px; margin: 20px auto;
         }
         .step-title { font-size: 1.4em; color: var(--primary); margin-bottom: 15px; }
         .btn-main {
@@ -30,24 +55,26 @@
         }
         .btn-main:active, .btn-stop:active { transform: scale(0.95); }
 
-        .timeline-container { background: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-height: 100px; }
+        .timeline-container { background: white; padding: 20px; border-radius: 20px; margin: 20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-height: 100px; max-width: 700px; }
         .story-block { background: #f1f2f6; border-left: 8px solid #ccc; padding: 15px; margin: 10px 0; text-align: left; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
 
-        /* Step 1 Styles */
+        /* Emotion Grid */
         .emotion-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
         .color-btn { height: 60px; border-radius: 15px; border: 3px solid white; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .color-btn.selected { transform: scale(1.1); border-color: #2d3436; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
-        .color-btn span { font-size: 12px; margin-top: 2px; color: rgba(0,0,0,0.6); pointer-events: none; } /* 글자 클릭 방지 */
+        .color-btn span { font-size: 12px; margin-top: 2px; color: rgba(0,0,0,0.6); pointer-events: none; }
 
+        /* Story Tabs */
         .story-tabs { display: flex; justify-content: space-between; background: #f1f2f6; border-radius: 15px; padding: 5px; margin-bottom: 15px; }
         .tab-btn { flex: 1; border: none; background: transparent; padding: 10px; font-family: 'Jua'; font-size: 1.1em; color: #b2bec3; cursor: pointer; border-radius: 10px; }
         .tab-btn.active { background: white; color: var(--primary); font-weight: bold; }
 
+        /* Inputs */
         .input-area { min-height: 80px; display: flex; align-items: center; justify-content: center; }
         .big-input { width: 80%; padding: 15px; border: 2px solid var(--primary); border-radius: 15px; font-family: 'Jua'; font-size: 1.2em; text-align: center; outline: none; }
         .preview-input { width: 90%; background: #ffeaa7; padding: 15px; border-radius: 15px; margin-top: 20px; color: #2d3436; font-size: 1.2em; text-align: center; border: none; font-family: 'Jua'; }
 
-        /* Step 2 Styles */
+        /* Rhythm Cards */
         .rhythm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .rhythm-card { border: 2px solid #ddd; border-radius: 15px; padding: 10px; cursor: pointer; background: white; }
         .rhythm-card.selected { border-color: var(--primary); background: #f0f0ff; transform: scale(1.02); }
@@ -56,7 +83,7 @@
         .rhythm-label { font-size: 1.1em; font-weight: bold; color: var(--primary); }
         .rhythm-desc { font-size: 0.8em; color: #636e72; }
 
-        /* Step 3: Composer UI */
+        /* Composer Console */
         .composer-console { background: #2d3436; padding: 20px; border-radius: 20px; color: white; }
         .score-vis { height: 70px; display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #636e72; padding-bottom: 5px; }
         .beat-box { width: 60px; height: 100%; background: rgba(255,255,255,0.1); border-radius: 5px; display: flex; align-items: flex-end; justify-content: center; gap: 2px; padding: 2px; position:relative; overflow: hidden; }
@@ -98,13 +125,35 @@
         .key { width: 40px; height: 120px; background: white; margin: 2px; border-radius: 0 0 5px 5px; cursor: pointer; border-bottom: 5px solid #b2bec3; }
         .key.chord { border-top: 8px solid var(--accent); }
         .key:active, .key.pressed { background: #ffeaa7; transform: translateY(2px); border-bottom-width: 2px; }
+
+        /* Step 4 Styles */
+        .question-card { background: #f0f0ff; border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .q-text { font-size: 1.3em; font-weight: bold; color: #2d3436; margin-bottom: 15px; white-space: pre-wrap; line-height: 1.4; }
+        .input-box { width: 95%; height: 100px; padding: 15px; border-radius: 15px; border: 2px solid #b2bec3; font-family: 'Jua'; font-size: 1.1em; resize: none; margin-top:10px; }
+        .save-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        #canvas-score { background: white; width: 100%; border-radius: 10px; margin-top:10px; display: none; }
     </style>
 </head>
 <body>
 
-    <h1>🎼 EAIM 스마트 앙상블</h1>
+    <div id="intro-screen">
+        <div class="intro-box">
+            <div class="intro-title">🎼 EAIM 스마트 앙상블</div>
+            <div class="intro-desc">
+                나만의 감정을 담아<br>세상에 하나뿐인 음악을 만들어보세요!<br>
+                악보를 몰라도 누구나 작곡할 수 있습니다.
+            </div>
+            <div class="intro-steps">
+                <div>1️⃣ <b>감정 선택:</b> 오늘 나의 기분은?</div>
+                <div>2️⃣ <b>리듬 결정:</b> 쿵짝쿵짝, 어떤 비트?</div>
+                <div>3️⃣ <b>멜로디 톡톡:</b> 건반을 눌러 작곡!</div>
+                <div>4️⃣ <b>탐구 & 공유:</b> 내 음악의 의미 찾기</div>
+            </div>
+            <button class="btn-start" onclick="startApp()">시작하기 🚀</button>
+        </div>
+    </div>
 
-    <div class="timeline-container">
+    <div class="timeline-container hidden" id="main-timeline">
         <h3 style="margin:0; color:#b2bec3;">우리의 음악 이야기</h3>
         <div id="timeline-list"></div>
         <div style="margin-top:10px;">
@@ -113,7 +162,7 @@
         </div>
     </div>
 
-    <div class="workspace">
+    <div class="workspace hidden" id="main-workspace">
         
         <section id="step-1">
             <div class="step-title">Step 1. 감정과 이야기 조각</div>
@@ -212,30 +261,48 @@
                 <div class="piano-keys" id="piano-area"></div>
                 <div id="status-msg" style="margin-top:10px;">멜로디를 입력하세요</div>
             </div>
-            <button id="btn-save" class="btn-main hidden" onclick="saveBlock()">📥 저장하기</button>
+            
+            <div id="save-controls" class="hidden" style="margin-top:15px; display:flex; gap:10px; justify-content:center;">
+                <button class="btn-main" style="background:#0984e3; width:45%;" onclick="saveAndContinue()">➕ 이어서 계속 만들기</button>
+                <button class="btn-main" style="background:#00b894; width:45%;" onclick="saveAndFinish()">🏁 작곡 끝내기 (탐구로)</button>
+            </div>
+
             <button class="btn-main" style="background:#636e72; font-size:0.9em; margin-top:10px;" onclick="resetMelody()">🔄 다시 쓰기</button>
         </section>
+
+        <section id="step-4" class="hidden">
+            <div class="step-title">Step 4. 나의 음악 탐구 & 저장</div>
+            
+            <div class="question-card">
+                <div style="color:#636e72; font-size:0.9em;">🤔 정답이 없는 질문</div>
+                <div id="inquiry-q" class="q-text">이 음악을 날씨로 표현한다면?</div>
+                <button class="btn-main" style="padding:5px 15px; font-size:0.8em; margin-bottom:10px;" onclick="refreshQuestion()">🔄 다른 질문 뽑기</button>
+                <textarea id="inquiry-a" class="input-box" placeholder="나의 생각을 자유롭게 적어보세요..."></textarea>
+            </div>
+
+            <div class="save-grid">
+                <button class="btn-main" style="background:#00b894;" onclick="downloadAudio()">🎧 녹음 및 다운로드 (.webm)</button>
+                <button class="btn-main" style="background:#74b9ff;" onclick="downloadScore()">🎼 악보 그림 저장 (.png)</button>
+                <button class="btn-main" style="background:#fab1a0;" onclick="saveText()">📝 탐구 일지 저장 (.txt)</button>
+                <button class="btn-main" style="background:#636e72;" onclick="location.reload()">🏠 처음으로</button>
+            </div>
+            
+            <canvas id="score-canvas" width="800" height="1000" style="display:none;"></canvas>
+        </section>
+
     </div>
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let activeNodes = [];
         let activeTimeouts = [];
+        let destNode = audioCtx.createMediaStreamDestination(); // For recording
 
         // Global State
         let current = { 
-            emo: '', 
-            rhythm: '', 
-            maxBeats: 4, 
-            instruments: ['piano'], 
-            melody: [], 
-            tempo: 1.0, 
-            artic: 'long', 
-            text: '', 
-            rhythmVars: ['repeat','repeat','repeat'], 
-            pitchVars: ['same','same','same'], 
-            noteLenMode: 'quarter', 
-            beatIdx: 0, 
+            emo: '', rhythm: '', maxBeats: 4, instruments: ['piano'], melody: [], 
+            tempo: 1.0, artic: 'long', text: '', rhythmVars: ['repeat','repeat','repeat'], 
+            pitchVars: ['same','same','same'], noteLenMode: 'quarter', beatIdx: 0, 
             when: '', where: '', who: '', what: '', color: '' 
         };
 
@@ -246,11 +313,28 @@
             surprised: "{when} {where} {who} 깜짝 놀라 {act} 😲"
         };
 
+        // Context-Aware Questions (Emotion + Story)
+        const inquiryPool = {
+            happy: ["우리가 만든 '[story]' 이야기에서 가장 빛나는 순간은 음악의 어느 부분인가요?", "이 음악을 들으며 '[story]' 장면을 상상할 때, 어떤 맛이 날 것 같나요?"],
+            excited: ["'[story]'의 주인공은 이 음악을 듣고 어떤 춤을 출까요?", "이 음악의 속도가 '[story]'의 어떤 움직임을 표현했나요?"],
+            sad: ["'[story]'의 주인공에게 이 음악을 위로의 선물로 준다면, 뭐라고 말하며 줄 건가요?", "이 음악의 멜로디가 눈물방울이라면, 어느 방향으로 흐르고 있나요?"],
+            lonely: ["'[story]'의 주인공이 혼자 있을 때, 이 음악이 친구가 되어줄 수 있을까요?", "이 음악의 여백(빈 공간)은 '[story]'의 어떤 마음을 닮았나요?"],
+            angry: ["음악 속의 강렬한 부분이 '[story]'의 어떤 사건과 닮았나요?", "이 음악이 쾅! 하고 터지는 화산이라면, 그 안에 무엇이 들어있을까요?"],
+            scary: ["'[story]' 상황에서 도망친다면, 이 음악은 얼마나 빠른 속도로 연주해야 할까요?", "이 음악을 들을 때 심장은 어떤 색깔로 뛰고 있을까요?"],
+            dream: ["'[story]'가 꿈이라면, 이 음악은 꿈속의 어떤 풍경을 그리고 있나요?", "이 음악을 들으면 어떤 신비한 동물이 나타날 것 같나요?"],
+            proud: ["'[story]'의 주인공에게 금메달을 걸어준다면, 어떤 음악이 어울릴까요?", "이 음악의 당당한 느낌은 '[story]'의 무엇을 닮았나요?"],
+            calm: ["'[story]'의 평온한 순간을 그림으로 그린다면 어떤 색을 칠하고 싶나요?", "이 음악이 흐르는 강물이라면, 어디로 흘러가고 있나요?"],
+            surprised: ["음악에서 가장 깜짝 놀란 부분은 어디인가요? '[story]'의 반전과 닮았나요?", "이 음악을 처음 들은 사람의 표정을 지어보세요!"]
+        };
+
         const C_CHORD = [261.6, 329.6, 392.0];
         const scale = [
-            {f:261.63, t:'chord', idx:0}, {f:293.66, t:'pass', idx:1}, {f:329.63, t:'chord', idx:2}, {f:349.23, t:'pass', idx:3},
-            {f:392.00, t:'chord', idx:4}, {f:440.00, t:'pass', idx:5}, {f:493.88, t:'pass', idx:6}, {f:523.25, t:'chord', idx:7},
-            {f:587.33, t:'pass', idx:8}, {f:659.25, t:'chord', idx:9}, {f:698.46, t:'pass', idx:10}, {f:783.99, t:'chord', idx:11} 
+            {f:261.63, t:'chord', idx:0, step:0}, {f:293.66, t:'pass', idx:1, step:1}, 
+            {f:329.63, t:'chord', idx:2, step:2}, {f:349.23, t:'pass', idx:3, step:3},
+            {f:392.00, t:'chord', idx:4, step:4}, {f:440.00, t:'pass', idx:5, step:5}, 
+            {f:493.88, t:'pass', idx:6, step:6}, {f:523.25, t:'chord', idx:7, step:7},
+            {f:587.33, t:'pass', idx:8, step:8}, {f:659.25, t:'chord', idx:9, step:9}, 
+            {f:698.46, t:'pass', idx:10, step:10}, {f:783.99, t:'chord', idx:11, step:11} 
         ];
 
         const rhythmData = {
@@ -263,6 +347,13 @@
         };
 
         let timeline = [];
+
+        function startApp() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('main-timeline').classList.remove('hidden');
+            document.getElementById('main-workspace').classList.remove('hidden');
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+        }
 
         function setEmotion(btn, emotionName, color) { 
             current.emo = emotionName; 
@@ -334,7 +425,7 @@
         function playRhythmLoop(r) { 
             if(audioCtx.state==='suspended')audioCtx.resume();
             const d=rhythmData[r]; const bd=0.5;
-            const pb=()=>{ const now=audioCtx.currentTime; d.loop.forEach(e=>{ const t=now+e.t*bd; if(e.i==='kick')playKick(t); else if(e.i==='snare')playSnare(t); /* Clean mix */ }); d.notes.forEach((c,i)=>{ setTimeout(()=>{ document.querySelectorAll('.'+c).forEach(n=>n.classList.add('active')); setTimeout(()=>document.querySelectorAll('.'+c).forEach(n=>n.classList.remove('active')),300); }, i*bd*1000); }); };
+            const pb=()=>{ const now=audioCtx.currentTime; d.loop.forEach(e=>{ const t=now+e.t*bd; if(e.i==='kick')playKick(t); else if(e.i==='snare')playSnare(t); }); d.notes.forEach((c,i)=>{ setTimeout(()=>{ document.querySelectorAll('.'+c).forEach(n=>n.classList.add('active')); setTimeout(()=>document.querySelectorAll('.'+c).forEach(n=>n.classList.remove('active')),300); }, i*bd*1000); }); };
             pb(); activeTimeouts.push(setInterval(pb, d.beats * bd * 1000));
         }
 
@@ -371,8 +462,11 @@
         }
 
         function cyclePitch(barIdx) {
-            const types = ['same', 'up1', 'up2', 'down1', 'invert', 'ending'];
-            const labels = {same:'━ 그대로', up1:'📈 한칸 위', up2:'🚀 두칸 위', down1:'📉 한칸 아래', invert:'🔀 뒤집기', ending:'🏁 마침표'};
+            const types = ['same', 'up1', 'up2', 'down1', 'invert', 'end-0', 'end-2', 'end-4', 'end-5', 'end-7'];
+            const labels = {
+                same:'━ 그대로', up1:'📈 한칸 위', up2:'🚀 두칸 위', down1:'📉 한칸 아래', invert:'🔀 뒤집기',
+                'end-0':'🏁 종지(도)', 'end-2':'🏁 종지(미)', 'end-4':'🏁 종지(솔)', 'end-5':'🏁 종지(라)', 'end-7':'🏁 종지(높은도)'
+            };
             const idx = barIdx - 2; let currType = current.pitchVars[idx];
             let nextIdx = (types.indexOf(currType) + 1) % types.length;
             let nextType = types[nextIdx];
@@ -429,21 +523,27 @@
             const gain = audioCtx.createGain();
             const filter = audioCtx.createBiquadFilter(); 
             osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+            gain.connect(destNode); // Record
             activeNodes.push(osc); activeNodes.push(gain); 
+
+            // SOUND ENVELOPE TWEAK: Crisp 16th notes
+            let releaseTime = t + d;
+            if (d < 0.3) { releaseTime = t + d + 0.05; } // Fast notes cut off quickly
+            else { releaseTime = t + d + 0.5; } // Long notes sustain
 
             switch(instType) {
                 case 'piano':
                     osc.type = 'triangle'; filter.type = 'lowpass'; filter.frequency.setValueAtTime(3000, t);
                     gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.6, t + 0.01); 
-                    gain.gain.exponentialRampToValueAtTime(0.01, t + d + 0.5); 
+                    gain.gain.exponentialRampToValueAtTime(0.01, releaseTime); 
                     const pOsc2 = audioCtx.createOscillator(); const pGain2 = audioCtx.createGain();
                     pOsc2.type = 'sine'; pOsc2.frequency.value = freq * 2; pGain2.gain.value = 0.2;
                     pOsc2.connect(pGain2); pGain2.connect(audioCtx.destination);
-                    pOsc2.start(t); pOsc2.stop(t+d+0.5); activeNodes.push(pOsc2); break;
+                    pOsc2.start(t); pOsc2.stop(releaseTime); activeNodes.push(pOsc2); break;
                 case 'violin':
                     osc.type = 'sawtooth'; filter.type = 'lowpass'; filter.frequency.value = 2000; filter.Q.value = 1;
                     gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.3, t + 0.1); 
-                    gain.gain.linearRampToValueAtTime(0.2, t + d); gain.gain.linearRampToValueAtTime(0.01, t + d + 0.2);
+                    gain.gain.linearRampToValueAtTime(0.2, t + d); gain.gain.linearRampToValueAtTime(0.01, releaseTime);
                     createVibrato(audioCtx, osc, 6, 5, t); break;
                 case 'cello':
                     osc.type = 'sawtooth'; filter.type = 'lowpass'; filter.frequency.value = 600; 
@@ -453,21 +553,43 @@
                 case 'flute':
                     osc.type = 'sine'; filter.type = 'lowpass'; filter.frequency.value = 1500;
                     gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.4, t + 0.05);
-                    gain.gain.linearRampToValueAtTime(0.01, t + d + 0.1);
+                    gain.gain.linearRampToValueAtTime(0.01, releaseTime);
                     createVibrato(audioCtx, osc, 5, 2, t); break;
                 case 'bassoon':
                     osc.type = 'square'; filter.type = 'lowpass'; filter.frequency.value = 900; filter.Q.value = 2; 
                     gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.25, t + 0.05);
-                    gain.gain.linearRampToValueAtTime(0.01, t + d + 0.1); break;
+                    gain.gain.linearRampToValueAtTime(0.01, releaseTime); break;
             }
-            osc.frequency.setValueAtTime(freq, t); osc.start(t); osc.stop(t + d + 1.0); 
+            osc.frequency.setValueAtTime(freq, t); osc.start(t); osc.stop(releaseTime + 0.1); 
         }
 
+        // --- ORCHESTRATION ---
         function playMultiSound(instruments, freq, time, beatDurationSec, totalBeats, accumulatedBeat) {
-            if(instruments.length === 0) { playSound('piano', freq, time, beatDurationSec * totalBeats); return; }
+            const count = instruments.length;
+            const maxBeats = current.maxBeats;
+
+            if (count === 1) { playSound(instruments[0], freq, time, beatDurationSec * totalBeats * 0.9); return; }
+
+            if (count === 2) {
+                instruments.forEach(inst => {
+                    if (inst === 'piano') {
+                        let beatCount = Math.floor(totalBeats);
+                        if(beatCount < 1) beatCount = 1;
+                        for(let i=0; i<beatCount; i++) {
+                             let currentBeatInBar = (accumulatedBeat + i) % maxBeats;
+                             if(currentBeatInBar % 2 === 0) { 
+                                 let hitTime = time + (i * beatDurationSec);
+                                 playSound('piano', freq, hitTime, beatDurationSec * 1.0); 
+                                 playSound('piano', freq * 1.5, hitTime, beatDurationSec * 1.0); 
+                             }
+                        }
+                    } else { playSound(inst, freq, time, beatDurationSec * totalBeats * 0.9); }
+                });
+                return;
+            }
+
             const hasMelodyInst = instruments.includes('flute') || instruments.includes('violin');
             const hasBassInst = instruments.includes('cello') || instruments.includes('bassoon');
-            const maxBeats = current.maxBeats;
 
             instruments.forEach(inst => {
                 if (inst === 'flute' || inst === 'violin') {
@@ -479,19 +601,14 @@
                         playSound(inst, bassFreq, time, beatDurationSec * maxBeats); 
                     }
                 } else if (inst === 'piano') {
-                    if (hasMelodyInst || hasBassInst) {
-                        let beatCount = Math.floor(totalBeats);
-                        if(beatCount < 1) beatCount = 1; 
-                        for(let i=0; i<beatCount; i++) {
-                             let currentBeatInBar = (accumulatedBeat + i) % maxBeats;
-                             if(currentBeatInBar % 2 === 0) { 
-                                 let hitTime = time + (i * beatDurationSec);
-                                 playSound('piano', freq, hitTime, beatDurationSec * 1.0); 
-                                 playSound('piano', freq * 1.5, hitTime, beatDurationSec * 1.0); 
-                             }
-                        }
-                    } else {
-                        playSound('piano', freq, time, beatDurationSec * totalBeats * 0.9);
+                    let beatCount = Math.floor(totalBeats);
+                    for(let i=0; i<beatCount; i++) {
+                         let currentBeatInBar = (accumulatedBeat + i) % maxBeats;
+                         if(currentBeatInBar % 2 === 0) { 
+                             let hitTime = time + (i * beatDurationSec);
+                             playSound('piano', freq, hitTime, beatDurationSec * 1.0); 
+                             playSound('piano', freq * 1.5, hitTime, beatDurationSec * 1.0); 
+                         }
                     }
                 }
             });
@@ -607,7 +724,7 @@
             current.beatIdx += duration;
             if(current.beatIdx >= current.maxBeats - 0.1) { 
                 document.getElementById('status-msg').innerText="완성! 변주를 선택해보세요"; 
-                document.getElementById('btn-save').classList.remove('hidden'); 
+                document.getElementById('save-controls').classList.remove('hidden'); 
                 previewMelody();
             }
         }
@@ -616,7 +733,7 @@
             current.melody=[]; current.beatIdx=0;
             const container = document.getElementById('score-container');
             if(container) { renderScoreUI(); }
-            document.getElementById('btn-save').classList.add('hidden'); 
+            document.getElementById('save-controls').classList.add('hidden'); 
             document.getElementById('status-msg').innerText = `${current.maxBeats}박자 멜로디를 입력하세요`;
         }
         function previewIfReady(){ if(current.beatIdx>=3.9) previewMelody(); }
@@ -627,9 +744,10 @@
             const applyPitch = (noteObj, pType) => {
                 let newIdx = noteObj.idx;
                 if(pType === 'up1') newIdx += 1; else if(pType === 'up2') newIdx += 2;
-                else if(pType === 'down1') newIdx -= 1; else if(pType === 'invert') newIdx = 7 - noteObj.idx; 
+                else if(pType === 'down1') newIdx -= 1; else if(pType === 'invert') newIdx = 7 - noteObj.idx;
+                if(pType.startsWith('end-')) { newIdx = parseInt(pType.split('-')[1]); }
                 if(newIdx < 0) newIdx = 0; if(newIdx > 11) newIdx = 11;
-                return { f: scale[newIdx].f, len: noteObj.len, idx: newIdx };
+                return { f: scale[newIdx].f, len: noteObj.len, idx: newIdx, step: scale[newIdx].step };
             };
             baseMelody.forEach(n => expanded.push(n));
             for(let i=0; i<3; i++) {
@@ -637,7 +755,9 @@
                 if(rType === 'ending') {
                     let rootFreq = scale[0].f;
                     if(pType === 'up1') rootFreq *= 2; else if(pType === 'down1') rootFreq /= 2; 
-                    expanded.push({f: rootFreq, idx: 0, len: current.maxBeats * 1.0}); continue; 
+                    let endNote = { f: scale[0].f, idx: 0, len: current.maxBeats * 1.0 };
+                    let finalNote = applyPitch(endNote, pType);
+                    expanded.push(finalNote); continue; 
                 }
                 let barNotes = [];
                 baseMelody.forEach(n => barNotes.push({...n}));
@@ -647,7 +767,7 @@
             return expanded;
         }
 
-        function saveBlock() {
+        function recordCurrentSegment() {
             current.text = document.getElementById('preview-msg').value; 
             timeline.push(JSON.parse(JSON.stringify(current)));
             let instDisplay = current.instruments.map(i => i === 'piano' ? '🎹' : i === 'violin' ? '🎻' : i === 'cello' ? '🎻(C)' : i === 'flute' ? '🌬️' : '🪵').join('');
@@ -655,16 +775,119 @@
             d.innerHTML=`<div><b>${current.text}</b></div><div><span style="font-size:0.8em; background:#ccc; color:white; padding:3px 8px; border-radius:10px;">${instDisplay} | ${current.rhythm}</span></div>`;
             document.getElementById('timeline-list').appendChild(d); document.getElementById('btn-play-all').classList.remove('hidden');
             document.getElementById('btn-stop-all').classList.remove('hidden');
-            stopDemo(); resetMelody(); nextStep(1);
+        }
+
+        function saveAndContinue() {
+            recordCurrentSegment();
+            resetMelody();
+            stopDemo();
+            document.querySelectorAll('section').forEach(s=>s.classList.add('hidden')); 
+            document.getElementById('step-1').classList.remove('hidden');
             document.getElementById('input-when').value=''; document.getElementById('input-where').value=''; 
             document.getElementById('input-who').value=''; document.getElementById('input-what').value='';
             document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelector('.tab-btn').classList.add('active');
             document.querySelectorAll('.big-input').forEach(i=>i.classList.add('hidden')); document.getElementById('input-when').classList.remove('hidden');
         }
 
-        function playKick(t){ const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(0.01,t+0.5); g.gain.setValueAtTime(1.2, t); g.gain.exponentialRampToValueAtTime(0.01,t+0.5); o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+0.5); activeNodes.push(o); }
-        function playSnare(t){ const b=audioCtx.createBuffer(1,audioCtx.sampleRate*0.1,audioCtx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; const s=audioCtx.createBufferSource(); s.buffer=b; const g=audioCtx.createGain(); const f=audioCtx.createBiquadFilter(); f.type='highpass'; f.freq=1000; g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.01,t+0.1); s.connect(f); f.connect(g); g.connect(audioCtx.destination); s.start(t); activeNodes.push(s); }
-        function playChord(fs,t,d){ /* Muted for clean mix */ } 
+        function saveAndFinish() {
+            recordCurrentSegment();
+            stopDemo();
+            refreshQuestion();
+            document.querySelectorAll('section').forEach(s=>s.classList.add('hidden')); 
+            document.getElementById('step-4').classList.remove('hidden');
+        }
+
+        function playKick(t){ const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(0.01,t+0.5); g.gain.setValueAtTime(1.2, t); g.gain.exponentialRampToValueAtTime(0.01,t+0.5); o.connect(g); g.connect(audioCtx.destination); g.connect(destNode); o.start(t); o.stop(t+0.5); activeNodes.push(o); }
+        function playSnare(t){ const b=audioCtx.createBuffer(1,audioCtx.sampleRate*0.1,audioCtx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; const s=audioCtx.createBufferSource(); s.buffer=b; const g=audioCtx.createGain(); const f=audioCtx.createBiquadFilter(); f.type='highpass'; f.freq=1000; g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.01,t+0.1); s.connect(f); f.connect(g); g.connect(audioCtx.destination); g.connect(destNode); s.start(t); activeNodes.push(s); }
+        function playChord(fs,t,d){ /* Muted */ } 
+
+        // --- STEP 4 FEATURES ---
+        function refreshQuestion() {
+            // Context-Aware Selection logic
+            let pool = inquiryPool[current.emo];
+            if(!pool) pool = ["이 음악을 들으면 어떤 장면이 떠오르나요?", "이 음악에 제목을 붙여주세요."];
+            
+            const randQ = pool[Math.floor(Math.random() * pool.length)];
+            const safeText = current.text.replace(/"/g, "'");
+            document.getElementById('inquiry-q').innerText = randQ.replace('[story]', safeText || '나의 이야기');
+        }
+        function saveText() {
+            const txt = `[EAIM 음악 탐구 일지]\n질문: ${document.getElementById('inquiry-q').innerText}\n답변: ${document.getElementById('inquiry-a').value}`;
+            const blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "music_journal.txt"; a.click();
+        }
+        function downloadAudio() {
+            const chunks = [];
+            const recorder = new MediaRecorder(destNode.stream);
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my_music.webm'; a.click();
+            };
+            recorder.start();
+            playWholeStory();
+            let totalBeats = 0;
+            timeline.forEach(b => { totalBeats += (b.maxBeats * 4); });
+            setTimeout(() => { recorder.stop(); }, (totalBeats * 500) + 2000); 
+        }
+        
+        function downloadScore() {
+            const cvs = document.getElementById('score-canvas');
+            const ctx = cvs.getContext('2d');
+            
+            let allNotes = [];
+            timeline.forEach(block => {
+                const expanded = getExpandedMelody(block.melody, block.rhythmVars, block.pitchVars);
+                expanded.forEach(n => {
+                    if(n.step === undefined) { 
+                        let found = scale.find(s => s.f === n.f);
+                        n.step = found ? found.step : 0;
+                    }
+                    allNotes.push(n);
+                });
+            });
+
+            const notesPerLine = 16;
+            const totalLines = Math.ceil(allNotes.length / notesPerLine);
+            cvs.height = Math.max(200, totalLines * 120 + 100); 
+            
+            ctx.fillStyle = "white"; ctx.fillRect(0,0, cvs.width, cvs.height);
+            ctx.fillStyle = "black"; ctx.font = "20px Jua"; ctx.fillText("나의 멜로디 악보", 20, 30);
+            
+            let currentLine = 0;
+            const staffYStart = 60;
+            const lineHeight = 120;
+
+            allNotes.forEach((n, i) => {
+                if (i > 0 && i % notesPerLine === 0) currentLine++;
+                
+                let startX = 60;
+                let x = startX + ((i % notesPerLine) * 40);
+                let baseY = staffYStart + (currentLine * lineHeight);
+                
+                // Draw Staff
+                if (i % notesPerLine === 0) {
+                    for(let L=0; L<5; L++) { 
+                        ctx.beginPath(); ctx.moveTo(40, baseY + L*10); ctx.lineTo(750, baseY + L*10); ctx.stroke(); 
+                    }
+                }
+                
+                // Note Position: Map step 0 (Low C) to 1 ledger line below
+                // Bottom line (E) is step 2.
+                // Y offset from bottom line = (step - 2) * 5
+                let noteY = (baseY + 40) - ((n.step - 2) * 5);
+                
+                ctx.beginPath(); ctx.arc(x, noteY, 6, 0, 2*Math.PI); ctx.fill();
+                ctx.moveTo(x+4, noteY); ctx.lineTo(x+4, noteY-35); ctx.stroke(); 
+                
+                // Ledger line for Middle C (Step 0)
+                if(n.step === 0) {
+                    ctx.beginPath(); ctx.moveTo(x-10, noteY); ctx.lineTo(x+10, noteY); ctx.stroke();
+                }
+            });
+
+            const a = document.createElement('a'); a.href = cvs.toDataURL("image/png"); a.download = 'score.png'; a.click();
+        }
 
     </script>
 </body>
