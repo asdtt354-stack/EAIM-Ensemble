@@ -6,84 +6,41 @@
     <title>EAIM 스마트 앙상블</title>
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6C5CE7; --accent: #00B894; --bg: #dfe6e9; --text: #2d3436; --red: #ff7675;
-        }
-        body {
-            font-family: 'Jua', sans-serif; background-color: var(--bg);
-            color: var(--text); margin: 0; padding: 0; text-align: center; user-select: none;
-        }
+        :root { --primary: #6C5CE7; --accent: #00B894; --bg: #dfe6e9; --text: #2d3436; --red: #ff7675; }
+        body { font-family: 'Jua', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; text-align: center; user-select: none; }
         .hidden { display: none !important; }
         
-        /* Intro Overlay Styles */
-        #intro-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #74b9ff, #6C5CE7);
-            z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; color: white;
-            padding: 20px; box-sizing: border-box;
-        }
-        .intro-box {
-            background: rgba(255, 255, 255, 0.2); padding: 30px; border-radius: 20px;
-            backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            max-width: 600px; width: 90%;
-        }
-        .intro-title { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .intro-desc { font-size: 1.2em; margin-bottom: 30px; line-height: 1.6; }
-        .intro-steps { text-align: left; margin-bottom: 30px; background: rgba(0,0,0,0.1); padding: 15px; border-radius: 10px; }
-        .btn-start {
-            background: #ffeaa7; color: #2d3436; border: none; padding: 15px 40px;
-            font-size: 1.5em; border-radius: 50px; cursor: pointer; font-family: 'Jua';
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: transform 0.2s;
-        }
+        #intro-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #74b9ff, #6C5CE7); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 20px; box-sizing: border-box; }
+        .intro-box { background: rgba(255, 255, 255, 0.2); padding: 30px; border-radius: 20px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.2); max-width: 600px; width: 90%; }
+        .btn-start { background: #ffeaa7; color: #2d3436; border: none; padding: 15px 40px; font-size: 1.5em; border-radius: 50px; cursor: pointer; font-family: 'Jua'; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: transform 0.2s; }
         .btn-start:hover { transform: scale(1.05); background: #fff; }
 
-        /* Main Workspace Styles */
-        .workspace {
-            background: white; padding: 25px; border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); max-width: 700px; margin: 20px auto;
-        }
+        .workspace { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); max-width: 800px; margin: 20px auto; }
         .step-title { font-size: 1.4em; color: var(--primary); margin-bottom: 15px; }
-        .btn-main {
-            background: var(--primary); color: white; border: none; padding: 10px 25px;
-            border-radius: 30px; font-size: 1.1em; cursor: pointer; font-family: 'Jua'; margin-top: 15px;
-            transition: 0.2s;
-        }
-        .btn-stop {
-            background: var(--red); color: white; border: none; padding: 10px 20px;
-            border-radius: 30px; font-size: 1.1em; cursor: pointer; font-family: 'Jua'; margin-left: 5px;
-        }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 30px; font-size: 1.1em; cursor: pointer; font-family: 'Jua'; margin-top: 15px; transition: 0.2s; }
+        .btn-stop { background: var(--red); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-size: 1.1em; cursor: pointer; font-family: 'Jua'; margin-left: 5px; }
         .btn-main:active, .btn-stop:active { transform: scale(0.95); }
 
         .timeline-container { background: white; padding: 20px; border-radius: 20px; margin: 20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-height: 100px; max-width: 700px; }
         .story-block { background: #f1f2f6; border-left: 8px solid #ccc; padding: 15px; margin: 10px 0; text-align: left; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
 
-        /* Emotion Grid */
         .emotion-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
         .color-btn { height: 60px; border-radius: 15px; border: 3px solid white; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .color-btn.selected { transform: scale(1.1); border-color: #2d3436; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
         .color-btn span { font-size: 12px; margin-top: 2px; color: rgba(0,0,0,0.6); pointer-events: none; }
 
-        /* Story Tabs */
         .story-tabs { display: flex; justify-content: space-between; background: #f1f2f6; border-radius: 15px; padding: 5px; margin-bottom: 15px; }
         .tab-btn { flex: 1; border: none; background: transparent; padding: 10px; font-family: 'Jua'; font-size: 1.1em; color: #b2bec3; cursor: pointer; border-radius: 10px; }
         .tab-btn.active { background: white; color: var(--primary); font-weight: bold; }
 
-        /* Inputs */
         .input-area { min-height: 80px; display: flex; align-items: center; justify-content: center; }
         .big-input { width: 80%; padding: 15px; border: 2px solid var(--primary); border-radius: 15px; font-family: 'Jua'; font-size: 1.2em; text-align: center; outline: none; }
         .preview-input { width: 90%; background: #ffeaa7; padding: 15px; border-radius: 15px; margin-top: 20px; color: #2d3436; font-size: 1.2em; text-align: center; border: none; font-family: 'Jua'; }
 
-        /* Rhythm Cards */
         .rhythm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .rhythm-card { border: 2px solid #ddd; border-radius: 15px; padding: 10px; cursor: pointer; background: white; }
         .rhythm-card.selected { border-color: var(--primary); background: #f0f0ff; transform: scale(1.02); }
-        .score-svg { width: 100%; height: 50px; margin: 5px 0; pointer-events: none; }
-        .note.active { fill: #e17055; filter: drop-shadow(0 0 5px #e17055); } 
-        .rhythm-label { font-size: 1.1em; font-weight: bold; color: var(--primary); }
-        .rhythm-desc { font-size: 0.8em; color: #636e72; }
 
-        /* Composer Console */
         .composer-console { background: #2d3436; padding: 20px; border-radius: 20px; color: white; }
         .score-vis { height: 70px; display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #636e72; padding-bottom: 5px; }
         .beat-box { width: 60px; height: 100%; background: rgba(255,255,255,0.1); border-radius: 5px; display: flex; align-items: flex-end; justify-content: center; gap: 2px; padding: 2px; position:relative; overflow: hidden; }
@@ -107,48 +64,44 @@
         .var-car { flex: 1; min-width: 60px; border: 2px solid #b2bec3; border-radius: 8px; padding: 8px 4px; background: transparent; color: #b2bec3; font-family: 'Jua'; cursor: pointer; font-size: 0.85em; transition: 0.2s; white-space: nowrap; }
         .var-car.head { background: #636e72; color: white; border: none; cursor: default; flex: 1.2; text-align: center; }
         .var-car:hover:not(.head) { background: rgba(255,255,255,0.1); }
-
         .var-car[data-rtype="quarter"] { border-color: #fab1a0; color: #fab1a0; }
         .var-car[data-rtype="eighth"] { border-color: #74b9ff; color: #74b9ff; }
-        .var-car[data-rtype="sixteenth"] { border-color: #ff7675; color: #ff7675; }
         .var-car[data-rtype="swing"] { border-color: #a29bfe; color: #a29bfe; }
         .var-car[data-rtype="ending"] { border-color: #00B894; color: #00B894; font-weight:bold; }
-        
-        .var-car[data-ptype="up1"] { border-color: #fdcb6e; color: #fdcb6e; background: rgba(253, 203, 110, 0.1); }
-        .var-car[data-ptype="up2"] { border-color: #e17055; color: #e17055; background: rgba(225, 112, 85, 0.1); font-weight: bold; }
-        .var-car[data-ptype="down1"] { border-color: #0984e3; color: #0984e3; background: rgba(9, 132, 227, 0.1); }
-        .var-car[data-ptype="invert"] { border-color: #e84393; color: #e84393; background: rgba(232, 67, 147, 0.1); }
-        .var-car[data-ptype="ending"] { border-color: #a29bfe; color: white; background: #a29bfe; font-weight: bold; }
+        .var-car[data-ptype^="end-"] { border-color: #a29bfe; color: white; background: #a29bfe; font-weight: bold; }
 
         input[type=range] { width: 100%; accent-color: var(--accent); }
-        .piano-keys { display: flex; justify-content: center; margin-top: 15px; }
-        .key { width: 40px; height: 120px; background: white; margin: 2px; border-radius: 0 0 5px 5px; cursor: pointer; border-bottom: 5px solid #b2bec3; }
-        .key.chord { border-top: 8px solid var(--accent); }
+        
+        .piano-keys { 
+            display: flex; justify-content: center; margin-top: 15px; position: relative; 
+            background: #2d3436; padding: 10px 0; border-radius: 10px;
+        }
+        .key { 
+            width: 40px; height: 140px; background: white; margin: 0 2px; 
+            border-radius: 0 0 5px 5px; cursor: pointer; border-bottom: 5px solid #b2bec3; 
+            display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px;
+            font-size: 14px; font-weight: bold; color: #2d3436; position: relative; z-index: 1;
+        }
+        .key.black {
+            width: 26px; height: 90px; background: #2d3436; border: 2px solid #000;
+            border-bottom: 4px solid #000; position: absolute; top: 10px; z-index: 2;
+            cursor: default; pointer-events: none;
+        }
         .key:active, .key.pressed { background: #ffeaa7; transform: translateY(2px); border-bottom-width: 2px; }
+        .key-label { pointer-events: none; }
 
-        /* Step 4 Styles */
         .question-card { background: #f0f0ff; border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         .q-text { font-size: 1.3em; font-weight: bold; color: #2d3436; margin-bottom: 15px; white-space: pre-wrap; line-height: 1.4; }
         .input-box { width: 95%; height: 100px; padding: 15px; border-radius: 15px; border: 2px solid #b2bec3; font-family: 'Jua'; font-size: 1.1em; resize: none; margin-top:10px; }
-        .save-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        #canvas-score { background: white; width: 100%; border-radius: 10px; margin-top:10px; display: none; }
+        .save-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <div id="intro-screen">
         <div class="intro-box">
-            <div class="intro-title">🎼 EAIM 스마트 앙상블</div>
-            <div class="intro-desc">
-                나만의 감정을 담아<br>세상에 하나뿐인 음악을 만들어보세요!<br>
-                악보를 몰라도 누구나 작곡할 수 있습니다.
-            </div>
-            <div class="intro-steps">
-                <div>1️⃣ <b>감정 선택:</b> 오늘 나의 기분은?</div>
-                <div>2️⃣ <b>리듬 결정:</b> 쿵짝쿵짝, 어떤 비트?</div>
-                <div>3️⃣ <b>멜로디 톡톡:</b> 건반을 눌러 작곡!</div>
-                <div>4️⃣ <b>탐구 & 공유:</b> 내 음악의 의미 찾기</div>
-            </div>
+            <div style="font-size:2.5em; margin-bottom:10px;">🎼 EAIM 스마트 앙상블</div>
+            <div style="font-size:1.2em; margin-bottom:30px;">나만의 감정을 담아<br>세상에 하나뿐인 음악을 만들어보세요!</div>
             <button class="btn-start" onclick="startApp()">시작하기 🚀</button>
         </div>
     </div>
@@ -275,19 +228,16 @@
             
             <div class="question-card">
                 <div style="color:#636e72; font-size:0.9em;">🤔 정답이 없는 질문</div>
-                <div id="inquiry-q" class="q-text">이 음악을 날씨로 표현한다면?</div>
+                <div id="inquiry-q" class="q-text"></div>
                 <button class="btn-main" style="padding:5px 15px; font-size:0.8em; margin-bottom:10px;" onclick="refreshQuestion()">🔄 다른 질문 뽑기</button>
                 <textarea id="inquiry-a" class="input-box" placeholder="나의 생각을 자유롭게 적어보세요..."></textarea>
             </div>
 
             <div class="save-grid">
                 <button class="btn-main" style="background:#00b894;" onclick="downloadAudio()">🎧 녹음 및 다운로드 (.webm)</button>
-                <button class="btn-main" style="background:#74b9ff;" onclick="downloadScore()">🎼 악보 그림 저장 (.png)</button>
                 <button class="btn-main" style="background:#fab1a0;" onclick="saveText()">📝 탐구 일지 저장 (.txt)</button>
-                <button class="btn-main" style="background:#636e72;" onclick="location.reload()">🏠 처음으로</button>
             </div>
-            
-            <canvas id="score-canvas" width="800" height="1000" style="display:none;"></canvas>
+            <button class="btn-main" style="background:#636e72; width:100%; margin-top:15px;" onclick="location.reload()">🏠 처음으로</button>
         </section>
 
     </div>
@@ -296,9 +246,8 @@
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let activeNodes = [];
         let activeTimeouts = [];
-        let destNode = audioCtx.createMediaStreamDestination(); // For recording
+        let destNode = audioCtx.createMediaStreamDestination(); 
 
-        // Global State
         let current = { 
             emo: '', rhythm: '', maxBeats: 4, instruments: ['piano'], melody: [], 
             tempo: 1.0, artic: 'long', text: '', rhythmVars: ['repeat','repeat','repeat'], 
@@ -313,7 +262,7 @@
             surprised: "{when} {where} {who} 깜짝 놀라 {act} 😲"
         };
 
-        // Context-Aware Questions (Emotion + Story)
+        // 🔥 복구된 질문 보따리 (이게 없어서 버튼이 멈췄었습니다!)
         const inquiryPool = {
             happy: ["우리가 만든 '[story]' 이야기에서 가장 빛나는 순간은 음악의 어느 부분인가요?", "이 음악을 들으며 '[story]' 장면을 상상할 때, 어떤 맛이 날 것 같나요?"],
             excited: ["'[story]'의 주인공은 이 음악을 듣고 어떤 춤을 출까요?", "이 음악의 속도가 '[story]'의 어떤 움직임을 표현했나요?"],
@@ -327,23 +276,22 @@
             surprised: ["음악에서 가장 깜짝 놀란 부분은 어디인가요? '[story]'의 반전과 닮았나요?", "이 음악을 처음 들은 사람의 표정을 지어보세요!"]
         };
 
-        const C_CHORD = [261.6, 329.6, 392.0];
         const scale = [
-            {f:261.63, t:'chord', idx:0, step:0}, {f:293.66, t:'pass', idx:1, step:1}, 
-            {f:329.63, t:'chord', idx:2, step:2}, {f:349.23, t:'pass', idx:3, step:3},
-            {f:392.00, t:'chord', idx:4, step:4}, {f:440.00, t:'pass', idx:5, step:5}, 
-            {f:493.88, t:'pass', idx:6, step:6}, {f:523.25, t:'chord', idx:7, step:7},
-            {f:587.33, t:'pass', idx:8, step:8}, {f:659.25, t:'chord', idx:9, step:9}, 
-            {f:698.46, t:'pass', idx:10, step:10}, {f:783.99, t:'chord', idx:11, step:11} 
+            {f:261.63, idx:0, name:'도'}, {f:293.66, idx:1, name:'레'}, 
+            {f:329.63, idx:2, name:'미'}, {f:349.23, idx:3, name:'파'},
+            {f:392.00, idx:4, name:'솔'}, {f:440.00, idx:5, name:'라'}, 
+            {f:493.88, idx:6, name:'시'}, {f:523.25, idx:7, name:'도'},
+            {f:587.33, idx:8, name:'레'}, {f:659.25, idx:9, name:'미'}, 
+            {f:698.46, idx:10, name:'파'}, {f:783.99, idx:11, name:'솔'} 
         ];
 
         const rhythmData = {
-            ballad: { beats: 4, loop: [{t:0,i:'kick'},{t:0,i:'chord'},{t:1,i:'snare'},{t:1,i:'chord'},{t:2,i:'kick'},{t:2,i:'chord'},{t:3,i:'snare'},{t:3,i:'chord'}], notes: ['bal-0','bal-1','bal-2','bal-3'] },
-            hiphop: { beats: 4, loop: [{t:0,i:'kick'},{t:0.75,i:'kick'},{t:1,i:'snare'},{t:2,i:'kick'},{t:3,i:'snare'}], notes: ['hip-0','hip-1','hip-2','hip-3'] },
-            march: { beats: 4, loop: [{t:0,i:'kick'},{t:0.5,i:'snare'},{t:1,i:'kick'},{t:1.5,i:'snare'},{t:2,i:'kick'},{t:2.5,i:'snare'},{t:3,i:'kick'},{t:3.5,i:'snare'}], notes: ['mar-0','mar-0','mar-1','mar-1'] },
-            waltz: { beats: 3, loop: [{t:0,i:'kick'},{t:1,i:'snare'},{t:1,i:'chord'},{t:2,i:'snare'},{t:2,i:'chord'}], notes: ['wal-0','wal-1','wal-2'] },
-            funk: { beats: 4, loop: [{t:0,i:'kick'}, {t:1,i:'snare'}, {t:1.75,i:'kick'}, {t:2,i:'snare'}, {t:2.5,i:'kick'}, {t:3,i:'snare'}], notes: ['fnk-0','fnk-1','fnk-2','fnk-3'] },
-            bossa: { beats: 4, loop: [{t:0,i:'kick'}, {t:0.75,i:'snare'}, {t:2,i:'kick'}, {t:2.75,i:'snare'}], notes: ['bos-0','bos-1','bos-2','bos-3'] }
+            ballad: { beats: 4, loop: [{t:0,i:'kick'},{t:0,i:'chord'},{t:1,i:'snare'},{t:1,i:'chord'},{t:2,i:'kick'},{t:2,i:'chord'},{t:3,i:'snare'},{t:3,i:'chord'}] },
+            hiphop: { beats: 4, loop: [{t:0,i:'kick'},{t:0.75,i:'kick'},{t:1,i:'snare'},{t:2,i:'kick'},{t:3,i:'snare'}] },
+            march: { beats: 4, loop: [{t:0,i:'kick'},{t:0.5,i:'snare'},{t:1,i:'kick'},{t:1.5,i:'snare'},{t:2,i:'kick'},{t:2.5,i:'snare'},{t:3,i:'kick'},{t:3.5,i:'snare'}] },
+            waltz: { beats: 3, loop: [{t:0,i:'kick'},{t:1,i:'snare'},{t:1,i:'chord'},{t:2,i:'snare'},{t:2,i:'chord'}] },
+            funk: { beats: 4, loop: [{t:0,i:'kick'}, {t:1,i:'snare'}, {t:1.75,i:'kick'}, {t:2,i:'snare'}, {t:2.5,i:'kick'}, {t:3,i:'snare'}] },
+            bossa: { beats: 4, loop: [{t:0,i:'kick'}, {t:0.75,i:'snare'}, {t:2,i:'kick'}, {t:2.75,i:'snare'}] }
         };
 
         let timeline = [];
@@ -356,19 +304,15 @@
         }
 
         function setEmotion(btn, emotionName, color) { 
-            current.emo = emotionName; 
-            current.color = color; 
+            current.emo = emotionName; current.color = color; 
             document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected')); 
-            btn.classList.add('selected'); 
-            updateText(); 
+            btn.classList.add('selected'); updateText(); 
         }
 
         function switchTab(t) { 
-            document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); 
-            event.target.classList.add('active'); 
+            document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); 
             document.querySelectorAll('.big-input').forEach(i=>i.classList.add('hidden')); 
-            document.getElementById(`input-${t}`).classList.remove('hidden'); 
-            document.getElementById(`input-${t}`).focus(); 
+            document.getElementById(`input-${t}`).classList.remove('hidden'); document.getElementById(`input-${t}`).focus(); 
         }
         
         function updateText() {
@@ -376,12 +320,8 @@
             const rawWhere = document.getElementById('input-where').value || '어딘가';
             const rawWho = document.getElementById('input-who').value || '누가';
             const what = document.getElementById('input-what').value || '무엇을 하고';
-            
-            const where = resolveJosa(rawWhere, 'loc');
-            const who = resolveJosa(rawWho, 'sub');
-
+            const where = resolveJosa(rawWhere, 'loc'); const who = resolveJosa(rawWho, 'sub');
             current.when=when; current.where=where; current.who=who; current.what=what;
-            
             if(current.emo) { 
                 current.text = templates[current.emo].replace('{when}',when).replace('{where}',where).replace('{who}',who).replace('{act}',what); 
                 document.getElementById('preview-msg').value = current.text; 
@@ -397,49 +337,36 @@
         }
 
         function renderScoreUI() {
-            const container = document.getElementById('score-container');
-            container.innerHTML = '';
+            const container = document.getElementById('score-container'); container.innerHTML = '';
             for(let i=0; i < current.maxBeats; i++) {
-                const box = document.createElement('div');
-                box.className = 'beat-box';
-                box.id = `beat-${i}`;
+                const box = document.createElement('div'); box.className = 'beat-box'; box.id = `beat-${i}`;
                 container.appendChild(box);
             }
             document.getElementById('status-msg').innerText = `${current.maxBeats}박자 멜로디를 입력하세요`;
         }
 
         function previewRhythm(b,r) { 
-            current.rhythm = r; 
-            current.maxBeats = rhythmData[r].beats; 
-            document.querySelectorAll('.rhythm-card').forEach(c=>c.classList.remove('selected')); 
-            b.classList.add('selected'); 
-            stopDemo(); 
-            playRhythmLoop(r); 
+            current.rhythm = r; current.maxBeats = rhythmData[r].beats; 
+            document.querySelectorAll('.rhythm-card').forEach(c=>c.classList.remove('selected')); b.classList.add('selected'); 
+            stopDemo(); playRhythmLoop(r); 
         }
 
         function stopDemo() { 
             if(activeTimeouts.length > 0) stopAllSound(); 
-            document.querySelectorAll('.note').forEach(n=>n.classList.remove('active'));
+            document.querySelectorAll('.key').forEach(k=>k.classList.remove('pressed'));
         }
 
         function playRhythmLoop(r) { 
             if(audioCtx.state==='suspended')audioCtx.resume();
             const d=rhythmData[r]; const bd=0.5;
-            const pb=()=>{ const now=audioCtx.currentTime; d.loop.forEach(e=>{ const t=now+e.t*bd; if(e.i==='kick')playKick(t); else if(e.i==='snare')playSnare(t); }); d.notes.forEach((c,i)=>{ setTimeout(()=>{ document.querySelectorAll('.'+c).forEach(n=>n.classList.add('active')); setTimeout(()=>document.querySelectorAll('.'+c).forEach(n=>n.classList.remove('active')),300); }, i*bd*1000); }); };
+            const pb=()=>{ const now=audioCtx.currentTime; d.loop.forEach(e=>{ const t=now+e.t*bd; if(e.i==='kick')playKick(t); else if(e.i==='snare')playSnare(t); }); };
             pb(); activeTimeouts.push(setInterval(pb, d.beats * bd * 1000));
         }
 
         function toggleInstrument(inst) {
             const idx = current.instruments.indexOf(inst);
-            if (idx > -1) {
-                if(current.instruments.length > 1) {
-                    current.instruments.splice(idx, 1);
-                    document.getElementById(`inst-${inst}`).classList.remove('active');
-                }
-            } else {
-                current.instruments.push(inst);
-                document.getElementById(`inst-${inst}`).classList.add('active');
-            }
+            if (idx > -1) { if(current.instruments.length > 1) { current.instruments.splice(idx, 1); document.getElementById(`inst-${inst}`).classList.remove('active'); } }
+            else { current.instruments.push(inst); document.getElementById(`inst-${inst}`).classList.add('active'); }
         }
 
         function setNoteLen(mode) {
@@ -449,8 +376,8 @@
         }
 
         function cycleRhythm(barIdx) {
-            const types = ['repeat', 'quarter', 'eighth', 'sixteenth', 'swing', 'ending'];
-            const labels = {repeat:'🔄 그대로', quarter:'♩ 한박자', eighth:'♫ 반박자', sixteenth:'♬ 16분음표', swing:'♪♩ 스윙', ending:'🏁 종지'};
+            const types = ['repeat', 'quarter', 'eighth', 'swing', 'ending'];
+            const labels = {repeat:'🔄 그대로', quarter:'♩ 한박자', eighth:'♫ 반박자', swing:'♪♩ 스윙', ending:'🏁 종지'};
             const idx = barIdx - 2; let currType = current.rhythmVars[idx];
             let nextIdx = (types.indexOf(currType) + 1) % types.length;
             let nextType = types[nextIdx];
@@ -463,10 +390,7 @@
 
         function cyclePitch(barIdx) {
             const types = ['same', 'up1', 'up2', 'down1', 'invert', 'end-0', 'end-2', 'end-4', 'end-5', 'end-7'];
-            const labels = {
-                same:'━ 그대로', up1:'📈 한칸 위', up2:'🚀 두칸 위', down1:'📉 한칸 아래', invert:'🔀 뒤집기',
-                'end-0':'🏁 종지(도)', 'end-2':'🏁 종지(미)', 'end-4':'🏁 종지(솔)', 'end-5':'🏁 종지(라)', 'end-7':'🏁 종지(높은도)'
-            };
+            const labels = {same:'━ 그대로', up1:'📈 한칸 위', up2:'🚀 두칸 위', down1:'📉 한칸 아래', invert:'🔀 뒤집기', 'end-0':'🏁 종지(도)', 'end-2':'🏁 종지(미)', 'end-4':'🏁 종지(솔)', 'end-5':'🏁 종지(라)', 'end-7':'🏁 종지(높은도)'};
             const idx = barIdx - 2; let currType = current.pitchVars[idx];
             let nextIdx = (types.indexOf(currType) + 1) % types.length;
             let nextType = types[nextIdx];
@@ -477,15 +401,26 @@
             previewSingleBar(barIdx);
         }
 
+        // 🎹 Piano Render
         function renderPiano() { 
             const b=document.getElementById('piano-area'); b.innerHTML=''; 
-            for(let i=0; i<8; i++) {
+            for(let i=0; i<12; i++) {
                 let n = scale[i];
-                let k=document.createElement('div'); k.className=`key ${n.t}`; 
+                let k=document.createElement('div'); 
+                k.className=`key`; 
+                k.innerHTML = `<span class="key-label">${n.name}</span>`;
                 k.onmousedown=()=> { addNote(n.f,i); k.classList.add('pressed'); };
                 k.onmouseup=()=>k.classList.remove('pressed');
                 k.onmouseleave=()=>k.classList.remove('pressed');
                 b.appendChild(k);
+
+                // Dummy black keys
+                const hasBlack = [0, 1, 3, 4, 5, 7, 8, 10].includes(i);
+                if(hasBlack && i < 11) {
+                    let bk = document.createElement('div');
+                    bk.className = 'key black';
+                    k.appendChild(bk);
+                }
             }
         }
 
@@ -509,27 +444,18 @@
         }
 
         function createVibrato(ctx, destination, rate, depth, time) {
-             const lfo = ctx.createOscillator();
-             const lfoGain = ctx.createGain();
+             const lfo = ctx.createOscillator(); const lfoGain = ctx.createGain();
              lfo.type = 'sine'; lfo.frequency.value = rate; lfoGain.gain.value = depth;
              lfo.connect(lfoGain); lfoGain.connect(destination.frequency); 
-             lfo.start(time); lfo.stop(time + 2); 
-             activeNodes.push(lfo);
+             lfo.start(time); lfo.stop(time + 2); activeNodes.push(lfo);
         }
 
         function playSound(instType, freq, time, dur) {
             const t = time; const d = dur;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            const filter = audioCtx.createBiquadFilter(); 
-            osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
-            gain.connect(destNode); // Record
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); const filter = audioCtx.createBiquadFilter(); 
+            osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); gain.connect(destNode); 
             activeNodes.push(osc); activeNodes.push(gain); 
-
-            // SOUND ENVELOPE TWEAK: Crisp 16th notes
-            let releaseTime = t + d;
-            if (d < 0.3) { releaseTime = t + d + 0.05; } // Fast notes cut off quickly
-            else { releaseTime = t + d + 0.5; } // Long notes sustain
+            let releaseTime = t + d; if (d < 0.3) { releaseTime = t + d + 0.05; } else { releaseTime = t + d + 0.5; } 
 
             switch(instType) {
                 case 'piano':
@@ -563,13 +489,9 @@
             osc.frequency.setValueAtTime(freq, t); osc.start(t); osc.stop(releaseTime + 0.1); 
         }
 
-        // --- ORCHESTRATION ---
         function playMultiSound(instruments, freq, time, beatDurationSec, totalBeats, accumulatedBeat) {
-            const count = instruments.length;
-            const maxBeats = current.maxBeats;
-
+            const count = instruments.length; const maxBeats = current.maxBeats;
             if (count === 1) { playSound(instruments[0], freq, time, beatDurationSec * totalBeats * 0.9); return; }
-
             if (count === 2) {
                 instruments.forEach(inst => {
                     if (inst === 'piano') {
@@ -587,17 +509,12 @@
                 });
                 return;
             }
-
             const hasMelodyInst = instruments.includes('flute') || instruments.includes('violin');
-            const hasBassInst = instruments.includes('cello') || instruments.includes('bassoon');
-
             instruments.forEach(inst => {
-                if (inst === 'flute' || inst === 'violin') {
-                    playSound(inst, freq * 2, time, beatDurationSec * totalBeats * 0.9);
-                } else if (inst === 'cello' || inst === 'bassoon') {
+                if (inst === 'flute' || inst === 'violin') { playSound(inst, freq * 2, time, beatDurationSec * totalBeats * 0.9); } 
+                else if (inst === 'cello' || inst === 'bassoon') {
                     if (accumulatedBeat % maxBeats < 0.1) {
-                        let bassFreq = freq / 2;
-                        if (hasMelodyInst) bassFreq = freq / 4; 
+                        let bassFreq = freq / 2; if (hasMelodyInst) bassFreq = freq / 4; 
                         playSound(inst, bassFreq, time, beatDurationSec * maxBeats); 
                     }
                 } else if (inst === 'piano') {
@@ -617,20 +534,15 @@
         function previewSingleBar(barNum) {
             stopAllSound();
             const tempo = parseFloat(document.getElementById('tempo-slider').value);
-            const beatTime = 0.5 / tempo; 
-            const now = audioCtx.currentTime;
+            const beatTime = 0.5 / tempo; const now = audioCtx.currentTime;
             let full = getExpandedMelody(current.melody, current.rhythmVars, current.pitchVars);
-            let accumulated = 0;
-            let targetStart = (barNum - 1) * current.maxBeats;
-            let targetEnd = targetStart + current.maxBeats;
+            let accumulated = 0; let targetStart = (barNum - 1) * current.maxBeats; let targetEnd = targetStart + current.maxBeats;
             let barNotes = [];
             full.forEach(n => { if(accumulated >= targetStart && accumulated < targetEnd) { barNotes.push(n); } accumulated += n.len; });
-            let cursor = 0;
-            let localAccum = 0; 
+            let cursor = 0; let localAccum = 0; 
             barNotes.forEach(n => {
                 playMultiSound(current.instruments, n.f, now + cursor, beatTime, n.len, localAccum);
-                cursor += n.len * beatTime;
-                localAccum += n.len;
+                cursor += n.len * beatTime; localAccum += n.len;
             });
         }
 
@@ -650,9 +562,7 @@
                 for(let b=0; b<loopCount; b++) {
                     rData.loop.forEach(evt => {
                         const t = start + (b * current.maxBeats * beatTime) + (evt.t * beatTime); 
-                        if(t < start + totalDur) {
-                            if(evt.i==='kick') playKick(t); else if(evt.i==='snare') playSnare(t); 
-                        }
+                        if(t < start + totalDur) { if(evt.i==='kick') playKick(t); else if(evt.i==='snare') playSnare(t); }
                     });
                 }
                 let cursor = 0; let accumulatedBeat = 0;
@@ -670,8 +580,7 @@
         function previewMelody() {
             stopAllSound();
             const tempo = parseFloat(document.getElementById('tempo-slider').value);
-            const beatTime = 0.5 / tempo;
-            const now = audioCtx.currentTime;
+            const beatTime = 0.5 / tempo; const now = audioCtx.currentTime;
             const fullMelody = getExpandedMelody(current.melody, current.rhythmVars, current.pitchVars);
             let cursorTime = 0; let accumulatedBeat = 0;
             fullMelody.forEach((n, i) => {
@@ -684,32 +593,27 @@
             stopDemo(); 
             if(audioCtx.state==='suspended')audioCtx.resume();
             let duration = 1.0; 
-            let visualWidth = '100%';
             if(current.noteLenMode === 'quarter') { duration = 1.0; } 
-            else if(current.noteLenMode === 'eighth') { duration = 0.5; visualWidth = '48%'; } 
+            else if(current.noteLenMode === 'eighth') { duration = 0.5; } 
             else if(current.noteLenMode === 'swing') {
                 let isStart = Math.abs(current.beatIdx % 1) < 0.1;
-                if(isStart) { duration = 0.66; visualWidth = '60%'; }
-                else { duration = 0.34; visualWidth = '35%'; }
-            } else if(current.noteLenMode === 'half') { duration = 2.0; visualWidth = '100%'; }
-            else if(current.noteLenMode === 'dotted') { duration = 3.0; visualWidth = '100%'; }
+                if(isStart) { duration = 0.66; } else { duration = 0.34; }
+            } else if(current.noteLenMode === 'half') { duration = 2.0; }
+            else if(current.noteLenMode === 'dotted') { duration = 3.0; }
 
-            if(current.beatIdx + duration > current.maxBeats + 0.1) {
-                alert(`앗! ${current.maxBeats - current.beatIdx}박자밖에 안 남았는데, ${duration}박자를 넣으려 하시네요!`);
-                return;
-            }
+            if(current.beatIdx + duration > current.maxBeats + 0.1) { alert("박자가 넘칩니다!"); return; }
 
             const tempo = parseFloat(document.getElementById('tempo-slider').value);
             const beatTime = 0.5 / tempo;
             playMultiSound(current.instruments, f, audioCtx.currentTime, beatTime, duration, current.beatIdx);
             current.melody.push({f:f, idx:i, len:duration});
+            
             let startBeat = Math.floor(current.beatIdx);
             let endBeat = Math.floor(current.beatIdx + duration - 0.01); 
             const startBox = document.getElementById(`beat-${startBeat}`);
             if(startBox) {
                 const subNote = document.createElement('div');
-                subNote.className = 'sub-note filled';
-                subNote.style.height = `${(i+1)*10}%`; subNote.style.width = visualWidth;
+                subNote.className = 'sub-note filled'; subNote.style.height = `${(i+1)*10}%`; subNote.style.width = '100%';
                 startBox.appendChild(subNote); startBox.classList.add('active');
             }
             for(let b = startBeat + 1; b <= endBeat; b++) {
@@ -747,14 +651,14 @@
                 else if(pType === 'down1') newIdx -= 1; else if(pType === 'invert') newIdx = 7 - noteObj.idx;
                 if(pType.startsWith('end-')) { newIdx = parseInt(pType.split('-')[1]); }
                 if(newIdx < 0) newIdx = 0; if(newIdx > 11) newIdx = 11;
-                return { f: scale[newIdx].f, len: noteObj.len, idx: newIdx, step: scale[newIdx].step };
+                return { f: scale[newIdx].f, len: noteObj.len, idx: newIdx };
             };
-            baseMelody.forEach(n => expanded.push(n));
+            baseMelody.forEach(n => expanded.push({f: n.f, len:n.len, idx:n.idx})); 
+
             for(let i=0; i<3; i++) {
                 let rType = rVars[i]; let pType = pVars[i];
                 if(rType === 'ending') {
                     let rootFreq = scale[0].f;
-                    if(pType === 'up1') rootFreq *= 2; else if(pType === 'down1') rootFreq /= 2; 
                     let endNote = { f: scale[0].f, idx: 0, len: current.maxBeats * 1.0 };
                     let finalNote = applyPitch(endNote, pType);
                     expanded.push(finalNote); continue; 
@@ -778,9 +682,7 @@
         }
 
         function saveAndContinue() {
-            recordCurrentSegment();
-            resetMelody();
-            stopDemo();
+            recordCurrentSegment(); resetMelody(); stopDemo();
             document.querySelectorAll('section').forEach(s=>s.classList.add('hidden')); 
             document.getElementById('step-1').classList.remove('hidden');
             document.getElementById('input-when').value=''; document.getElementById('input-where').value=''; 
@@ -790,9 +692,7 @@
         }
 
         function saveAndFinish() {
-            recordCurrentSegment();
-            stopDemo();
-            refreshQuestion();
+            recordCurrentSegment(); stopDemo(); refreshQuestion();
             document.querySelectorAll('section').forEach(s=>s.classList.add('hidden')); 
             document.getElementById('step-4').classList.remove('hidden');
         }
@@ -801,15 +701,14 @@
         function playSnare(t){ const b=audioCtx.createBuffer(1,audioCtx.sampleRate*0.1,audioCtx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; const s=audioCtx.createBufferSource(); s.buffer=b; const g=audioCtx.createGain(); const f=audioCtx.createBiquadFilter(); f.type='highpass'; f.freq=1000; g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.01,t+0.1); s.connect(f); f.connect(g); g.connect(audioCtx.destination); g.connect(destNode); s.start(t); activeNodes.push(s); }
         function playChord(fs,t,d){ /* Muted */ } 
 
-        // --- STEP 4 FEATURES ---
         function refreshQuestion() {
-            // Context-Aware Selection logic
+            // Safe emotion check
             let pool = inquiryPool[current.emo];
             if(!pool) pool = ["이 음악을 들으면 어떤 장면이 떠오르나요?", "이 음악에 제목을 붙여주세요."];
             
             const randQ = pool[Math.floor(Math.random() * pool.length)];
-            const safeText = current.text.replace(/"/g, "'");
-            document.getElementById('inquiry-q').innerText = randQ.replace('[story]', safeText || '나의 이야기');
+            const safeText = current.text ? current.text.replace(/"/g, "'") : "나의 이야기";
+            document.getElementById('inquiry-q').innerText = randQ.replace('[story]', safeText);
         }
         function saveText() {
             const txt = `[EAIM 음악 탐구 일지]\n질문: ${document.getElementById('inquiry-q').innerText}\n답변: ${document.getElementById('inquiry-a').value}`;
@@ -817,78 +716,20 @@
             const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "music_journal.txt"; a.click();
         }
         function downloadAudio() {
+            alert("녹음을 시작합니다... 음악이 끝날 때까지 기다려주세요! 🎵");
             const chunks = [];
             const recorder = new MediaRecorder(destNode.stream);
             recorder.ondataavailable = e => chunks.push(e.data);
             recorder.onstop = () => {
                 const blob = new Blob(chunks, { type: 'audio/webm' });
                 const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my_music.webm'; a.click();
+                alert("녹음 완료! 다운로드됩니다.");
             };
             recorder.start();
             playWholeStory();
-            let totalBeats = 0;
-            timeline.forEach(b => { totalBeats += (b.maxBeats * 4); });
+            let totalBeats = 0; timeline.forEach(b => { totalBeats += (b.maxBeats * 4); });
             setTimeout(() => { recorder.stop(); }, (totalBeats * 500) + 2000); 
         }
-        
-        function downloadScore() {
-            const cvs = document.getElementById('score-canvas');
-            const ctx = cvs.getContext('2d');
-            
-            let allNotes = [];
-            timeline.forEach(block => {
-                const expanded = getExpandedMelody(block.melody, block.rhythmVars, block.pitchVars);
-                expanded.forEach(n => {
-                    if(n.step === undefined) { 
-                        let found = scale.find(s => s.f === n.f);
-                        n.step = found ? found.step : 0;
-                    }
-                    allNotes.push(n);
-                });
-            });
-
-            const notesPerLine = 16;
-            const totalLines = Math.ceil(allNotes.length / notesPerLine);
-            cvs.height = Math.max(200, totalLines * 120 + 100); 
-            
-            ctx.fillStyle = "white"; ctx.fillRect(0,0, cvs.width, cvs.height);
-            ctx.fillStyle = "black"; ctx.font = "20px Jua"; ctx.fillText("나의 멜로디 악보", 20, 30);
-            
-            let currentLine = 0;
-            const staffYStart = 60;
-            const lineHeight = 120;
-
-            allNotes.forEach((n, i) => {
-                if (i > 0 && i % notesPerLine === 0) currentLine++;
-                
-                let startX = 60;
-                let x = startX + ((i % notesPerLine) * 40);
-                let baseY = staffYStart + (currentLine * lineHeight);
-                
-                // Draw Staff
-                if (i % notesPerLine === 0) {
-                    for(let L=0; L<5; L++) { 
-                        ctx.beginPath(); ctx.moveTo(40, baseY + L*10); ctx.lineTo(750, baseY + L*10); ctx.stroke(); 
-                    }
-                }
-                
-                // Note Position: Map step 0 (Low C) to 1 ledger line below
-                // Bottom line (E) is step 2.
-                // Y offset from bottom line = (step - 2) * 5
-                let noteY = (baseY + 40) - ((n.step - 2) * 5);
-                
-                ctx.beginPath(); ctx.arc(x, noteY, 6, 0, 2*Math.PI); ctx.fill();
-                ctx.moveTo(x+4, noteY); ctx.lineTo(x+4, noteY-35); ctx.stroke(); 
-                
-                // Ledger line for Middle C (Step 0)
-                if(n.step === 0) {
-                    ctx.beginPath(); ctx.moveTo(x-10, noteY); ctx.lineTo(x+10, noteY); ctx.stroke();
-                }
-            });
-
-            const a = document.createElement('a'); a.href = cvs.toDataURL("image/png"); a.download = 'score.png'; a.click();
-        }
-
     </script>
 </body>
 </html>
