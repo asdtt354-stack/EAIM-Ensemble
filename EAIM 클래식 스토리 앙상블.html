@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAIM 스마트 앙상블</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #6C5CE7; --accent: #00B894; --bg: #dfe6e9; --text: #2d3436; --red: #ff7675; }
+        body { font-family: 'Jua', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; text-align: center; user-select: none; }
+        .hidden { display: none !important; }
+        
+        /* 대문(Intro) */
+        #intro-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #74b9ff, #6C5CE7); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 20px; box-sizing: border-box; }
+        .intro-box { background: rgba(255, 255, 255, 0.2); padding: 30px; border-radius: 20px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.2); max-width: 600px; width: 90%; }
+        .btn-start { background: #ffeaa7; color: #2d3436; border: none; padding: 15px 40px; font-size: 1.5em; border-radius: 50px; cursor: pointer; font-family: 'Jua'; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: transform 0.2s; }
+        .btn-start:hover { transform: scale(1.05); background: #fff; }
+
+        /* 메인 작업 공간 */
+        .workspace { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); max-width: 800px; margin: 20px auto; }
+        .step-title { font-size: 1.4em; color: var(--primary); margin-bottom: 15px; }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 30px; font-size: 1.1em; cursor: pointer; font-family: 'Jua'; margin-top: 15px; transition: 0.2s; }
+        .btn-stop { background: var(--red); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-size: 1.1em; cursor: pointer; font-family: 'Jua'; margin-left: 5px; }
+        .btn-main:active, .btn-stop:active { transform: scale(0.95); }
+
+        .timeline-container { background: white; padding: 20px; border-radius: 20px; margin: 20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-height: 100px; max-width: 700px; }
+        .story-block { background: #f1f2f6; border-left: 8px solid #ccc; padding: 15px; margin: 10px 0; text-align: left; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+
+        .emotion-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+        .color-btn { height: 60px; border-radius: 15px; border: 3px solid white; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .color-btn.selected { transform: scale(1.1); border-color: #2d3436; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        .color-btn span { font-size: 12px; margin-top: 2px; color: rgba(0,0,0,0.6); pointer-events: none; }
+
+        .story-tabs { display: flex; justify-content: space-between; background: #f1f2f6; border-radius: 15px; padding: 5px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; border: none; background: transparent; padding: 10px; font-family: 'Jua'; font-size: 1.1em; color: #b2bec3; cursor: pointer; border-radius: 10px; }
+        .tab-btn.active { background: white; color: var(--primary); font-weight: bold; }
+
+        .input-area { min-height: 80px; display: flex; align-items: center; justify-content: center; }
+        .big-input { width: 80%; padding: 15px; border: 2px solid var(--primary); border-radius: 15px; font-family: 'Jua'; font-size: 1.2em; text-align: center; outline: none; }
+        .preview-input { width: 90%; background: #ffeaa7; padding: 15px; border-radius: 15px; margin-top: 20px; color: #2d3436; font-size: 1.2em; text-align: center; border: none; font-family: 'Jua'; }
+
+        .rhythm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .rhythm-card { border: 2px solid #ddd; border-radius: 15px; padding: 10px; cursor: pointer; background: white; }
+        .rhythm-card.selected { border-color: var(--primary); background: #f0f0ff; transform: scale(1.02); }
+
+        .composer-console { background: #2d3436; padding: 20px; border-radius: 20px; color: white; }
+        .score-vis { height: 70px; display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #636e72; padding-bottom: 5px; }
+        .beat-box { width: 60px; height: 100%; background: rgba(255,255,255,0.1); border-radius: 5px; display: flex; align-items: flex-end; justify-content: center; gap: 2px; padding: 2px; position:relative; overflow: hidden; }
+        .beat-box.active { background: rgba(255,255,255,0.2); border: 1px solid var(--accent); }
+        .sub-note { background: var(--accent); opacity: 0.3; border-radius: 3px; height: 0; width: 100%; }
+        .sub-note.filled { opacity: 1; }
+
+        .controls { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; text-align: left; }
+        .control-label { font-size: 0.9em; color: #dfe6e9; margin-bottom: 5px; margin-top: 10px; }
+
+        .inst-opts { display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; }
+        .btn-inst { padding: 8px 10px; border-radius: 15px; border: 2px solid #636e72; background: #636e72; color: #b2bec3; font-family: 'Jua'; cursor: pointer; font-size: 0.9em; transition: 0.2s; }
+        .btn-inst:hover { background: rgba(255,255,255,0.1); }
+        .btn-inst.active { border-color: #fab1a0; background: #fab1a0; color: #2d3436; font-weight: bold; transform: scale(1.05); box-shadow: 0 0 10px #fab1a0; }
+
+        .note-len-opts { display: flex; justify-content: center; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
+        .btn-len { padding: 8px 10px; border-radius: 20px; border: 2px solid #b2bec3; background: transparent; color: #b2bec3; font-family: 'Jua'; cursor: pointer; margin-bottom:5px; }
+        .btn-len.active { border-color: var(--accent); color: white; background: var(--accent); font-weight: bold; }
+
+        .train-container { display: flex; gap: 5px; margin-bottom: 5px; }
+        .var-car { flex: 1; min-width: 60px; border: 2px solid #b2bec3; border-radius: 8px; padding: 8px 4px; background: transparent; color: #b2bec3; font-family: 'Jua'; cursor: pointer; font-size: 0.85em; transition: 0.2s; white-space: nowrap; }
+        .var-car.head { background: #636e72; color: white; border: none; cursor: default; flex: 1.2; text-align: center; }
+        .var-car:hover:not(.head) { background: rgba(255,255,255,0.1); }
+        .var-car[data-rtype="quarter"] { border-color: #fab1a0; color: #fab1a0; }
+        .var-car[data-rtype="eighth"] { border-color: #74b9ff; color: #74b9ff; }
+        .var-car[data-rtype="swing"] { border-color: #a29bfe; color: #a29bfe; }
+        .var-car[data-rtype="ending"] { border-color: #00B894; color: #00B894; font-weight:bold; }
+        .var-car[data-ptype^="end-"] { border-color: #a29bfe; color: white; background: #a29bfe; font-weight: bold; }
+
+        input[type=range] { width: 100%; accent-color: var(--accent); }
+        
+        /* 🎹 피아노 건반 스타일 (업그레이드) */
+        .piano-keys { 
+            display: flex; justify-content: center; margin-top: 15px; position: relative; 
+            background: #2d3436; padding: 10px 0; border-radius: 10px;
+        }
+        .key { 
+            width: 40px; height: 140px; background: white; margin: 0 2px; 
+            border-radius: 0 0 5px 5px; cursor: pointer; border-bottom: 5px solid #b2bec3; 
+            display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px;
+            font-size: 14px; font-weight: bold; color: #2d3436; position: relative; z-index: 1;
+        }
+        /* 검은 건반 (모양만) */
+        .key.black {
+            width: 26px; height: 90px; background: #2d3436; border: 2px solid #000;
+            border-bottom: 4px solid #000; position: absolute; top: 10px; z-index: 2;
+            cursor: default; pointer-events: none; /* 클릭 방지 */
+        }
+        .key:active, .key.pressed { background: #ffeaa7; transform: translateY(2px); border-bottom-width: 2px; }
+        .key-label { pointer-events: none; }
+
+        /* 질문 카드 & 저장 영역 */
+        .question-card { background: #f0f0ff; border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .q-text { font-size: 1.3em; font-weight: bold; color: #2d3436; margin-bottom: 15px; white-space: pre-wrap; line-height: 1.4; }
+        .input-box { width: 95%; height: 100px; padding: 15px; border-radius: 15px; border: 2px solid #b2bec3; font-family: 'Jua'; font-size: 1.1em; resize: none; margin-top:10px; }
+        .save-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        <div class="intro-box">
+            <div style="font-size:2.5em; margin-bottom:10px;">🎼 EAIM 스마트 앙상블</div>
+            <div style="font-size:1.2em; margin-bottom:30px;">나만의 감정을 담아<br>세상에 하나뿐인 음악을 만들어보세요!</div>
+            <div style="text-align:left; background:rgba(0,0,0,0.1); padding:15px; border-radius:10px; margin-bottom:20px;">
+                <div1️⃣ <b>감정 선택:</b> 오늘 나의 기분은?</div>
+                <div>2️⃣ <b>리듬 결정:</b> 쿵짝쿵짝, 어떤 비트?</div>
+                <div>3️⃣ <b>멜로디 톡톡:</b> 건반을 눌러 작곡!</div>
+                <div>4️⃣ <b>탐구 & 공유:</b> 내 음악의 의미 찾기</div>
+            </div>
+            <button class="btn-start" onclick="startApp()">시작하기 🚀</button>
+        </div>
+    </div>
+
+    <div class="timeline-container hidden" id="main-timeline">
+        <h3 style="margin:0; color:#b2bec3;">우리의 음악 이야기</h3>
+        <div id="timeline-list"></div>
+        <div style="margin-top:10px;">
+            <button id="btn-play-all" class="btn-main hidden" style="background:#e17055" onclick="playWholeStory()">▶️ 전체 감상</button>
+            <button id="btn-stop-all" class="btn-stop hidden" onclick="stopAllSound()">■ 정지</button>
+        </div>
+    </div>
+
+    <div class="workspace hidden" id="main-workspace">
+        
+        <section id="step-1">
+            <div class="step-title">Step 1. 감정과 이야기 조각</div>
+            <div class="emotion-grid">
+                <div class="color-btn" style="background:#ffeaa7" onclick="setEmotion(this, 'happy', '#ffeaa7')">😊<span>기쁨</span></div>
+                <div class="color-btn" style="background:#fdcb6e" onclick="setEmotion(this, 'excited', '#fdcb6e')">🎉<span>신남</span></div>
+                <div class="color-btn" style="background:#e84393" onclick="setEmotion(this, 'surprised', '#e84393')">😲<span>놀람</span></div>
+                <div class="color-btn" style="background:#74b9ff" onclick="setEmotion(this, 'sad', '#74b9ff')">💧<span>슬픔</span></div>
+                <div class="color-btn" style="background:#dfe6e9" onclick="setEmotion(this, 'lonely', '#dfe6e9')">🍂<span>외로움</span></div>
+                <div class="color-btn" style="background:#ff7675" onclick="setEmotion(this, 'angry', '#ff7675')">🔥<span>화남</span></div>
+                <div class="color-btn" style="background:#636e72; color:white;" onclick="setEmotion(this, 'scary', '#636e72')">😱<span>무서움</span></div>
+                <div class="color-btn" style="background:#a29bfe" onclick="setEmotion(this, 'dream', '#a29bfe')">🔮<span>신비</span></div>
+                <div class="color-btn" style="background:#00b894" onclick="setEmotion(this, 'proud', '#00b894')">🏆<span>뿌듯</span></div>
+                <div class="color-btn" style="background:#55efc4" onclick="setEmotion(this, 'calm', '#55efc4')">🌿<span>평온</span></div>
+            </div>
+            <div class="story-tabs">
+                <button class="tab-btn active" onclick="switchTab('when')">🕒 언제</button>
+                <button class="tab-btn" onclick="switchTab('where')">📍 어디서</button>
+                <button class="tab-btn" onclick="switchTab('who')">👤 누가</button>
+                <button class="tab-btn" onclick="switchTab('what')">🎈 무엇을</button>
+            </div>
+            <div class="input-area">
+                <input type="text" id="input-when" class="big-input" placeholder="예: 어느 맑은 아침" oninput="updateText()">
+                <input type="text" id="input-where" class="big-input hidden" placeholder="예: 무지개 동산 (단어만)" oninput="updateText()">
+                <input type="text" id="input-who" class="big-input hidden" placeholder="예: 친구와 (자유롭게)" oninput="updateText()">
+                <input type="text" id="input-what" class="big-input hidden" placeholder="예: 춤을 췄어 (서술어)" oninput="updateText()">
+            </div>
+            <input type="text" id="preview-msg" class="preview-input" value="(감정을 선택하면 이야기가 만들어집니다)" placeholder="내용을 자유롭게 수정해보세요!">
+            <button class="btn-main" onclick="nextStep(2)">이야기 완성! 리듬 정하기 👉</button>
+        </section>
+
+        <section id="step-2" class="hidden">
+            <div class="step-title">Step 2. 리듬을 듣고 골라보세요</div>
+            <div class="rhythm-grid">
+                <div class="rhythm-card" onclick="previewRhythm(this, 'ballad')"><div class="rhythm-label">☁️ 발라드 (4/4)</div><div class="rhythm-desc">부드러운 피아노</div></div>
+                <div class="rhythm-card" onclick="previewRhythm(this, 'hiphop')"><div class="rhythm-label">🏀 힙합 (4/4)</div><div class="rhythm-desc">쿵-짝-짝 비트</div></div>
+                <div class="rhythm-card" onclick="previewRhythm(this, 'march')"><div class="rhythm-label">👟 행진 (4/4)</div><div class="rhythm-desc">씩씩한 드럼</div></div>
+                <div class="rhythm-card" onclick="previewRhythm(this, 'waltz')"><div class="rhythm-label">💃 왈츠 (3/4)</div><div class="rhythm-desc">3박자 쿵짝짝</div></div>
+                <div class="rhythm-card" onclick="previewRhythm(this, 'funk')"><div class="rhythm-label">🎸 펑크 (4/4)</div><div class="rhythm-desc">쪼개지는 16비트</div></div>
+                <div class="rhythm-card" onclick="previewRhythm(this, 'bossa')"><div class="rhythm-label">🏖️ 보사노바 (4/4)</div><div class="rhythm-desc">라틴 싱코페이션</div></div>
+            </div>
+            <button class="btn-main" onclick="nextStep(3)">이 리듬으로 결정! 👉</button>
+        </section>
+
+        <section id="step-3" class="hidden">
+            <div class="step-title">Step 3. 작곡 & 변주 (합주 + 리듬 + 멜로디)</div>
+            <div class="composer-console">
+                <div class="control-label">🎻 악기 합주 선택 (원하는 만큼 누르세요!)</div>
+                <div class="inst-opts">
+                    <button class="btn-inst active" id="inst-piano" onclick="toggleInstrument('piano')">🎹 피아노</button>
+                    <button class="btn-inst" id="inst-violin" onclick="toggleInstrument('violin')">🎻 바이올린</button>
+                    <button class="btn-inst" id="inst-cello" onclick="toggleInstrument('cello')">🎻 첼로</button>
+                    <button class="btn-inst" id="inst-flute" onclick="toggleInstrument('flute')">🌬️ 플루트</button>
+                    <button class="btn-inst" id="inst-bassoon" onclick="toggleInstrument('bassoon')">🪵 바순</button>
+                </div>
+
+                <div class="note-len-opts">
+                    <button class="btn-len" id="len-eighth" onclick="setNoteLen('eighth')">♫ 반박자</button>
+                    <button class="btn-len active" id="len-quarter" onclick="setNoteLen('quarter')">♩ 한박자</button>
+                    <button class="btn-len" id="len-swing" onclick="setNoteLen('swing')">♪♩ 스윙</button>
+                    <button class="btn-len" id="len-half" onclick="setNoteLen('half')">𝅗𝅥 두박자</button>
+                    <button class="btn-len" id="len-dotted" onclick="setNoteLen('dotted')">𝅗𝅥. 세박자</button>
+                </div>
+
+                <div class="score-vis" id="score-container"></div>
+                
+                <div class="controls">
+                    <div class="control-label">🚂 리듬(Rhythm) 변주</div>
+                    <div class="train-container">
+                        <button class="var-car head">1.나의 멜로디</button>
+                        <button class="var-car" id="btn-rvar-2" data-rtype="repeat" onclick="cycleRhythm(2)">2. 🔄 그대로</button>
+                        <button class="var-car" id="btn-rvar-3" data-rtype="repeat" onclick="cycleRhythm(3)">3. 🔄 그대로</button>
+                        <button class="var-car" id="btn-rvar-4" data-rtype="repeat" onclick="cycleRhythm(4)">4. 🔄 그대로</button>
+                    </div>
+
+                    <div class="control-label">🎢 멜로디(Melody) 변주</div>
+                    <div class="train-container">
+                        <button class="var-car head" style="background:#2d3436; border:1px solid #636e72;">음높이</button>
+                        <button class="var-car" id="btn-pvar-2" data-ptype="same" onclick="cyclePitch(2)">2. ━ 그대로</button>
+                        <button class="var-car" id="btn-pvar-3" data-ptype="same" onclick="cyclePitch(3)">3. ━ 그대로</button>
+                        <button class="var-car" id="btn-pvar-4" data-ptype="same" onclick="cyclePitch(4)">4. ━ 그대로</button>
+                    </div>
+                    
+                    <div style="display:flex; justify-content: space-between; margin-top:15px; align-items:center;">
+                        <div style="width:48%">
+                            <label>🐢 빠르기 🐇</label>
+                            <input type="range" id="tempo-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="previewIfReady()">
+                        </div>
+                        <div style="width:48%; display:flex; gap:5px;">
+                            <button class="btn-main" style="padding:5px 10px; margin:0; font-size:0.9em; flex:1; background:#00B894;" onclick="previewMelody()">🔊 전체 듣기</button>
+                            <button class="btn-stop" style="padding:5px 10px; margin:0; font-size:0.9em; flex:0.5;" onclick="stopAllSound()">■</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="piano-keys" id="piano-area"></div>
+                <div id="status-msg" style="margin-top:10px;">멜로디를 입력하세요</div>
+            </div>
+            
+            <div id="save-controls" class="hidden" style="margin-top:15px; display:flex; gap:10px; justify-content:center;">
+                <button class="btn-main" style="background:#0984e3; width:45%;" onclick="saveAndContinue()">➕ 이어서 계속 만들기</button>
+                <button class="btn-main" style="background:#00b894; width:45%;" onclick="saveAndFinish()">🏁 작곡 끝내기 (탐구로)</button>
+            </div>
+
+            <button class="btn-main" style="background:#636e72; font-size:0.9em; margin-top:10px;" onclick="resetMelody()">🔄 다시 쓰기</button>
+        </section>
+
+        <section id="step-4" class="hidden">
+            <div class="step-title">Step 4. 나의 음악 탐구 & 저장</div>
+            
+            <div class="question-card">
+                <div style="color:#636e72; font-size:0.9em;">🤔 정답이 없는 질문</div>
+                <div id="inquiry-q" class="q-text"></div>
+                <button class="btn-main" style="padding:5px 15px; font-size:0.8em; margin-bottom:10px;" onclick="refreshQuestion()">🔄 다른 질문 뽑기</button>
+                <textarea id="inquiry-a" class="input-box" placeholder="나의 생각을 자유롭게 적어보세요..."></textarea>
+            </div>
+
+            <div class="save-grid">
+                <button class="btn-main" style="background:#00b894;" onclick="downloadAudio()">🎧 녹음 및 다운로드 (.webm)</button>
+                <button class="btn-main" style="background:#fab1a0;" onclick="saveText()">📝 탐구 일지 저장 (.txt)</button>
+            </div>
+            <button class="btn-main" style="background:#636e72; width:100%; margin-top:15px;" onclick="location.reload()">🏠 처음으로</button>
+        </section>
+
+    </div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let activeNodes = [];
+        let activeTimeouts = [];
+        let destNode = audioCtx.createMediaStreamDestination(); 
+
+        let current = { 
+            emo: '', rhythm: '', maxBeats: 4, instruments: ['piano'], melody: [], 
+            tempo: 1.0, artic: 'long', text: '', rhythmVars: ['repeat','repeat','repeat'], 
+            pitchVars: ['same','same','same'], noteLenMode: 'quarter', beatIdx: 0, 
+            when: '', where: '', who: '', what: '', color: '' 
+        };
+
+        const templates = {
+            happy: "{when} {where} {who} 기분 좋게 {act} 😊", excited: "{when} {where} {who} 신나게 {act} 🎉", sad: "{when} {where} {who} 슬프게 {act} 💧",
+            lonely: "{when} {where} {who} 혼자 외롭게 {act} 🍂", angry: "{when} {where} {who} 화가 나서 {act} 🔥", scary: "{when} 깜깜한 {where} {who} 무섭게 {act} 😱",
+            dream: "{when} 꿈속 {where} {who} 신비롭게 {act} 🔮", proud: "{when} {where} {who} 자랑스럽게 {act} 🏆", calm: "{when} {where} {who} 평온하게 {act} 🌿",
+            surprised: "{when} {where} {who} 깜짝 놀라 {act} 😲"
+        };
+
+        // 🔥 복구된 질문 보따리 (중요!)
+        const inquiryPool = {
+            happy: ["우리가 만든 '[story]' 이야기에서 가장 빛나는 순간은 음악의 어느 부분인가요?", "이 음악을 들으며 '[story]' 장면을 상상할 때, 어떤 맛이 날 것 같나요?"],
+            excited: ["'[story]'의 주인공은 이 음악을 듣고 어떤 춤을 출까요?", "이 음악의 속도가 '[story]'의 어떤 움직임을 표현했나요?"],
+            sad: ["'[story]'의 주인공에게 이 음악을 위로의 선물로 준다면, 뭐라고 말하며 줄 건가요?", "이 음악의 멜로디가 눈물방울이라면, 어느 방향으로 흐르고 있나요?"],
+            lonely: ["'[story]'의 주인공이 혼자 있을 때, 이 음악이 친구가 되어줄 수 있을까요?", "이 음악의 여백(빈 공간)은 '[story]'의 어떤 마음을 닮았나요?"],
+            angry: ["음악 속의 강렬한 부분이 '[story]'의 어떤 사건과 닮았나요?", "이 음악이 쾅! 하고 터지는 화산이라면, 그 안에 무엇이 들어있을까요?"],
+            scary: ["'[story]' 상황에서 도망친다면, 이 음악은 얼마나 빠른 속도로 연주해야 할까요?", "이 음악을 들을 때 심장은 어떤 색깔로 뛰고 있을까요?"],
+            dream: ["'[story]'가 꿈이라면, 이 음악은 꿈속의 어떤 풍경을 그리고 있나요?", "이 음악을 들으면 어떤 신비한 동물이 나타날 것 같나요?"],
+            proud: ["'[story]'의 주인공에게 금메달을 걸어준다면, 어떤 음악이 어울릴까요?", "이 음악의 당당한 느낌은 '[story]'의 무엇을 닮았나요?"],
+            calm: ["'[story]'의 평온한 순간을 그림으로 그린다면 어떤 색을 칠하고 싶나요?", "이 음악이 흐르는 강물이라면, 어디로 흘러가고 있나요?"],
+            surprised: ["음악에서 가장 깜짝 놀란 부분은 어디인가요? '[story]'의 반전과 닮았나요?", "이 음악을 처음 들은 사람의 표정을 지어보세요!"]
+        };
+
+        const scale = [
+            {f:261.63, idx:0, name:'도'}, {f:293.66, idx:1, name:'레'}, 
+            {f:329.63, idx:2, name:'미'}, {f:349.23, idx:3, name:'파'},
+            {f:392.00, idx:4, name:'솔'}, {f:440.00, idx:5, name:'라'}, 
+            {f:493.88, idx:6, name:'시'}, {f:523.25, idx:7, name:'도'},
+            {f:587.33, idx:8, name:'레'}, {f:659.25, idx:9, name:'미'}, 
+            {f:698.46, idx:10, name:'파'}, {f:783.99, idx:11, name:'솔'} 
+        ];
+
+        const rhythmData = {
+            ballad: { beats: 4, loop: [{t:0,i:'kick'},{t:0,i:'chord'},{t:1,i:'snare'},{t:1,i:'chord'},{t:2,i:'kick'},{t:2,i:'chord'},{t:3,i:'snare'},{t:3,i:'chord'}] },
+            hiphop: { beats: 4, loop: [{t:0,i:'kick'},{t:0.75,i:'kick'},{t:1,i:'snare'},{t:2,i:'kick'},{t:3,i:'snare'}] },
+            march: { beats: 4, loop: [{t:0,i:'kick'},{t:0.5,i:'snare'},{t:1,i:'kick'},{t:1.5,i:'snare'},{t:2,i:'kick'},{t:2.5,i:'snare'},{t:3,i:'kick'},{t:3.5,i:'snare'}] },
+            waltz: { beats: 3, loop: [{t:0,i:'kick'},{t:1,i:'snare'},{t:1,i:'chord'},{t:2,i:'snare'},{t:2,i:'chord'}] },
+            funk: { beats: 4, loop: [{t:0,i:'kick'}, {t:1,i:'snare'}, {t:1.75,i:'kick'}, {t:2,i:'snare'}, {t:2.5,i:'kick'}, {t:3,i:'snare'}] },
+            bossa: { beats: 4, loop: [{t:0,i:'kick'}, {t:0.75,i:'snare'}, {t:2,i:'kick'}, {t:2.75,i:'snare'}] }
+        };
+
+        let timeline = [];
+
+        function startApp() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('main-timeline').classList.remove('hidden');
+            document.getElementById('main-workspace').classList.remove('hidden');
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function setEmotion(btn, emotionName, color) { 
+            current.emo = emotionName; current.color = color; 
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected')); 
+            btn.classList.add('selected'); updateText(); 
+        }
+
+        function switchTab(t) { 
+            document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); 
+            document.querySelectorAll('.big-input').forEach(i=>i.classList.add('hidden')); 
+            document.getElementById(`input-${t}`).classList.remove('hidden'); document.getElementById(`input-${t}`).focus(); 
+        }
+        
+        function updateText() {
+            const when = document.getElementById('input-when').value || '언제';
+            const rawWhere = document.getElementById('input-where').value || '어딘가';
+            const rawWho = document.getElementById('input-who').value || '누가';
+            const what = document.getElementById('input-what').value || '무엇을 하고';
+            const where = resolveJosa(rawWhere, 'loc'); const who = resolveJosa(rawWho, 'sub');
+            current.when=when; current.where=where; current.who=who; current.what=what;
+            if(current.emo) { 
+                current.text = templates[current.emo].replace('{when}',when).replace('{where}',where).replace('{who}',who).replace('{act}',what); 
+                document.getElementById('preview-msg').value = current.text; 
+                document.getElementById('preview-msg').style.backgroundColor = current.color; 
+            }
+        }
+
+        function nextStep(n) { 
+            stopDemo(); 
+            document.querySelectorAll('section').forEach(s=>s.classList.add('hidden')); 
+            document.getElementById(`step-${n}`).classList.remove('hidden'); 
+            if(n===3){ renderScoreUI(); renderPiano(); resetMelody(); } 
+        }
+
+        function renderScoreUI() {
+            const container = document.getElementById('score-container'); container.innerHTML = '';
+            for(let i=0; i < current.maxBeats; i++) {
+                const box = document.createElement('div'); box.className = 'beat-box'; box.id = `beat-${i}`;
+                container.appendChild(box);
+            }
+            document.getElementById('status-msg').innerText = `${current.maxBeats}박자 멜로디를 입력하세요`;
+        }
+
+        function previewRhythm(b,r) { 
+            current.rhythm = r; current.maxBeats = rhythmData[r].beats; 
+            document.querySelectorAll('.rhythm-card').forEach(c=>c.classList.remove('selected')); b.classList.add('selected'); 
+            stopDemo(); playRhythmLoop(r); 
+        }
+
+        function stopDemo() { 
+            if(activeTimeouts.length > 0) stopAllSound(); 
+            document.querySelectorAll('.key').forEach(k=>k.classList.remove('pressed'));
+        }
+
+        function playRhythmLoop(r) { 
+            if(audioCtx.state==='suspended')audioCtx.resume();
+            const d=rhythmData[r]; const bd=0.5;
+            const pb=()=>{ const now=audioCtx.currentTime; d.loop.forEach(e=>{ const t=now+e.t*bd; if(e.i==='kick')playKick(t); else if(e.i==='snare')playSnare(t); }); };
+            pb(); activeTimeouts.push(setInterval(pb, d.beats * bd * 1000));
+        }
+
+        function toggleInstrument(inst) {
+            const idx = current.instruments.indexOf(inst);
+            if (idx > -1) { if(current.instruments.length > 1) { current.instruments.splice(idx, 1); document.getElementById(`inst-${inst}`).classList.remove('active'); } }
+            else { current.instruments.push(inst); document.getElementById(`inst-${inst}`).classList.add('active'); }
+        }
+
+        function setNoteLen(mode) {
+            current.noteLenMode = mode;
+            document.querySelectorAll('.btn-len').forEach(b => b.classList.remove('active'));
+            document.getElementById(`len-${mode}`).classList.add('active');
+        }
+
+        function cycleRhythm(barIdx) {
+            const types = ['repeat', 'quarter', 'eighth', 'swing', 'ending'];
+            const labels = {repeat:'🔄 그대로', quarter:'♩ 한박자', eighth:'♫ 반박자', swing:'♪♩ 스윙', ending:'🏁 종지'};
+            const idx = barIdx - 2; let currType = current.rhythmVars[idx];
+            let nextIdx = (types.indexOf(currType) + 1) % types.length;
+            let nextType = types[nextIdx];
+            current.rhythmVars[idx] = nextType;
+            const btn = document.getElementById(`btn-rvar-${barIdx}`);
+            btn.innerText = `${barIdx}. ${labels[nextType]}`;
+            btn.setAttribute('data-rtype', nextType);
+            previewSingleBar(barIdx);
+        }
+
+        function cyclePitch(barIdx) {
+            const types = ['same', 'up1', 'up2', 'down1', 'invert', 'end-0', 'end-2', 'end-4', 'end-5', 'end-7'];
+            const labels = {same:'━ 그대로', up1:'📈 한칸 위', up2:'🚀 두칸 위', down1:'📉 한칸 아래', invert:'🔀 뒤집기', 'end-0':'🏁 종지(도)', 'end-2':'🏁 종지(미)', 'end-4':'🏁 종지(솔)', 'end-5':'🏁 종지(라)', 'end-7':'🏁 종지(높은도)'};
+            const idx = barIdx - 2; let currType = current.pitchVars[idx];
+            let nextIdx = (types.indexOf(currType) + 1) % types.length;
+            let nextType = types[nextIdx];
+            current.pitchVars[idx] = nextType;
+            const btn = document.getElementById(`btn-pvar-${barIdx}`);
+            btn.innerText = `${barIdx}. ${labels[nextType]}`;
+            btn.setAttribute('data-ptype', nextType);
+            previewSingleBar(barIdx);
+        }
+
+        function renderPiano() { 
+            const b=document.getElementById('piano-area'); b.innerHTML=''; 
+            for(let i=0; i<12; i++) {
+                let n = scale[i];
+                let k=document.createElement('div'); 
+                k.className=`key`; 
+                k.innerHTML = `<span class="key-label">${n.name}</span>`;
+                k.onmousedown=()=> { addNote(n.f,i); k.classList.add('pressed'); };
+                k.onmouseup=()=>k.classList.remove('pressed');
+                k.onmouseleave=()=>k.classList.remove('pressed');
+                b.appendChild(k);
+
+                const hasBlack = [0, 1, 3, 4, 5, 7, 8, 10].includes(i);
+                if(hasBlack && i < 11) {
+                    let bk = document.createElement('div');
+                    bk.className = 'key black';
+                    k.appendChild(bk);
+                }
+            }
+        }
+
+        function resolveJosa(word, type) {
+            if (!word) return "";
+            if (type === 'sub') { const exceptions = ["내가", "네가", "누가", "우리가", "저희가"]; if (exceptions.includes(word)) return word; }
+            if (type === 'loc' && word.endsWith('에서')) return word;
+            const last = word.charCodeAt(word.length - 1);
+            if (last < 0xAC00 || last > 0xD7A3) return word; 
+            const hasBatchim = (last - 0xAC00) % 28 > 0;
+            if (type === 'sub') return word + (hasBatchim ? '이' : '가');
+            if (type === 'loc') return word + '에서';
+            return word;
+        }
+
+        function stopAllSound() {
+            activeNodes.forEach(node => { try { node.stop(); } catch(e) {} try { node.disconnect(); } catch(e) {} });
+            activeNodes = [];
+            activeTimeouts.forEach(id => { clearTimeout(id); clearInterval(id); });
+            activeTimeouts = [];
+        }
+
+        function createVibrato(ctx, destination, rate, depth, time) {
+             const lfo = ctx.createOscillator(); const lfoGain = ctx.createGain();
+             lfo.type = 'sine'; lfo.frequency.value = rate; lfoGain.gain.value = depth;
+             lfo.connect(lfoGain); lfoGain.connect(destination.frequency); 
+             lfo.start(time); lfo.stop(time + 2); activeNodes.push(lfo);
+        }
+
+        function playSound(instType, freq, time, dur) {
+            const t = time; const d = dur;
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); const filter = audioCtx.createBiquadFilter(); 
+            osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); gain.connect(destNode); 
+            activeNodes.push(osc); activeNodes.push(gain); 
+            let releaseTime = t + d; if (d < 0.3) { releaseTime = t + d + 0.05; } else { releaseTime = t + d + 0.5; } 
+
+            switch(instType) {
+                case 'piano':
+                    osc.type = 'triangle'; filter.type = 'lowpass'; filter.frequency.setValueAtTime(3000, t);
+                    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.6, t + 0.01); 
+                    gain.gain.exponentialRampToValueAtTime(0.01, releaseTime); 
+                    const pOsc2 = audioCtx.createOscillator(); const pGain2 = audioCtx.createGain();
+                    pOsc2.type = 'sine'; pOsc2.frequency.value = freq * 2; pGain2.gain.value = 0.2;
+                    pOsc2.connect(pGain2); pGain2.connect(audioCtx.destination);
+                    pOsc2.start(t); pOsc2.stop(releaseTime); activeNodes.push(pOsc2); break;
+                case 'violin':
+                    osc.type = 'sawtooth'; filter.type = 'lowpass'; filter.frequency.value = 2000; filter.Q.value = 1;
+                    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.3, t + 0.1); 
+                    gain.gain.linearRampToValueAtTime(0.2, t + d); gain.gain.linearRampToValueAtTime(0.01, releaseTime);
+                    createVibrato(audioCtx, osc, 6, 5, t); break;
+                case 'cello':
+                    osc.type = 'sawtooth'; filter.type = 'lowpass'; filter.frequency.value = 600; 
+                    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.3, t + 0.15); 
+                    gain.gain.linearRampToValueAtTime(0.01, t + d + 0.3);
+                    createVibrato(audioCtx, osc, 4, 3, t); break;
+                case 'flute':
+                    osc.type = 'sine'; filter.type = 'lowpass'; filter.frequency.value = 1500;
+                    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.4, t + 0.05);
+                    gain.gain.linearRampToValueAtTime(0.01, releaseTime);
+                    createVibrato(audioCtx, osc, 5, 2, t); break;
+                case 'bassoon':
+                    osc.type = 'square'; filter.type = 'lowpass'; filter.frequency.value = 900; filter.Q.value = 2; 
+                    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.25, t + 0.05);
+                    gain.gain.linearRampToValueAtTime(0.01, releaseTime); break;
+            }
+            osc.frequency.setValueAtTime(freq, t); osc.start(t); osc.stop(releaseTime + 0.1); 
+        }
+
+        function playMultiSound(instruments, freq, time, beatDurationSec, totalBeats, accumulatedBeat) {
+            const count = instruments.length; const maxBeats = current.maxBeats;
+            if (count === 1) { playSound(instruments[0], freq, time, beatDurationSec * totalBeats * 0.9); return; }
+            if (count === 2) {
+                instruments.forEach(inst => {
+                    if (inst === 'piano') {
+                        let beatCount = Math.floor(totalBeats);
+                        if(beatCount < 1) beatCount = 1;
+                        for(let i=0; i<beatCount; i++) {
+                             let currentBeatInBar = (accumulatedBeat + i) % maxBeats;
+                             if(currentBeatInBar % 2 === 0) { 
+                                 let hitTime = time + (i * beatDurationSec);
+                                 playSound('piano', freq, hitTime, beatDurationSec * 1.0); 
+                                 playSound('piano', freq * 1.5, hitTime, beatDurationSec * 1.0); 
+                             }
+                        }
+                    } else { playSound(inst, freq, time, beatDurationSec * totalBeats * 0.9); }
+                });
+                return;
+            }
+            const hasMelodyInst = instruments.includes('flute') || instruments.includes('violin');
+            instruments.forEach(inst => {
+                if (inst === 'flute' || inst === 'violin') { playSound(inst, freq * 2, time, beatDurationSec * totalBeats * 0.9); } 
+                else if (inst === 'cello' || inst === 'bassoon') {
+                    if (accumulatedBeat % maxBeats < 0.1) {
+                        let bassFreq = freq / 2; if (hasMelodyInst) bassFreq = freq / 4; 
+                        playSound(inst, bassFreq, time, beatDurationSec * maxBeats); 
+                    }
+                } else if (inst === 'piano') {
+                    let beatCount = Math.floor(totalBeats);
+                    for(let i=0; i<beatCount; i++) {
+                         let currentBeatInBar = (accumulatedBeat + i) % maxBeats;
+                         if(currentBeatInBar % 2 === 0) { 
+                             let hitTime = time + (i * beatDurationSec);
+                             playSound('piano', freq, hitTime, beatDurationSec * 1.0); 
+                             playSound('piano', freq * 1.5, hitTime, beatDurationSec * 1.0); 
+                         }
+                    }
+                }
+            });
+        }
+
+        function previewSingleBar(barNum) {
+            stopAllSound();
+            const tempo = parseFloat(document.getElementById('tempo-slider').value);
+            const beatTime = 0.5 / tempo; const now = audioCtx.currentTime;
+            let full = getExpandedMelody(current.melody, current.rhythmVars, current.pitchVars);
+            let accumulated = 0; let targetStart = (barNum - 1) * current.maxBeats; let targetEnd = targetStart + current.maxBeats;
+            let barNotes = [];
+            full.forEach(n => { if(accumulated >= targetStart && accumulated < targetEnd) { barNotes.push(n); } accumulated += n.len; });
+            let cursor = 0; let localAccum = 0; 
+            barNotes.forEach(n => {
+                playMultiSound(current.instruments, n.f, now + cursor, beatTime, n.len, localAccum);
+                cursor += n.len * beatTime; localAccum += n.len;
+            });
+        }
+
+        function playWholeStory() {
+            stopAllSound();
+            if(audioCtx.state==='suspended')audioCtx.resume();
+            let accTime=0; const now=audioCtx.currentTime+0.1;
+            timeline.forEach((blk, idx) => {
+                const tempo = 1.0; const beatTime = 0.5 / blk.tempo;
+                const fullMelody = getExpandedMelody(blk.melody, blk.rhythmVars, blk.pitchVars);
+                let totalBeats = 0; fullMelody.forEach(n => totalBeats += n.len);
+                let totalDur = totalBeats * beatTime;
+                const start = now + accTime;
+                let to1 = setTimeout(() => { document.querySelectorAll('.story-block').forEach((b,i)=>b.style.background=i===idx?'#ffeaa7':'#f1f2f6'); }, accTime*1000);
+                activeTimeouts.push(to1);
+                const rData = rhythmData[blk.rhythm]; const loopCount = 4; 
+                for(let b=0; b<loopCount; b++) {
+                    rData.loop.forEach(evt => {
+                        const t = start + (b * current.maxBeats * beatTime) + (evt.t * beatTime); 
+                        if(t < start + totalDur) { if(evt.i==='kick') playKick(t); else if(evt.i==='snare') playSnare(t); }
+                    });
+                }
+                let cursor = 0; let accumulatedBeat = 0;
+                fullMelody.forEach(n => {
+                    let insts = Array.isArray(blk.instruments) ? blk.instruments : [blk.instrument || 'piano'];
+                    playMultiSound(insts, n.f, start + cursor, beatTime, n.len, accumulatedBeat);
+                    cursor += n.len * beatTime; accumulatedBeat += n.len;
+                });
+                accTime += totalDur;
+            });
+            let to2 = setTimeout(() => document.querySelectorAll('.story-block').forEach(b=>b.style.background='#f1f2f6'), accTime*1000);
+            activeTimeouts.push(to2);
+        }
+        
+        function previewMelody() {
+            stopAllSound();
+            const tempo = parseFloat(document.getElementById('tempo-slider').value);
+            const beatTime = 0.5 / tempo; const now = audioCtx.currentTime;
+            const fullMelody = getExpandedMelody(current.melody, current.rhythmVars, current.pitchVars);
+            let cursorTime = 0; let accumulatedBeat = 0;
+            fullMelody.forEach((n, i) => {
+                playMultiSound(current.instruments, n.f, now + cursorTime, beatTime, n.len, accumulatedBeat);
+                cursorTime += n.len * beatTime; accumulatedBeat += n.len;
+            });
+        }
+        
+        function addNote(f,i) { 
+            stopDemo(); 
+            if(audioCtx.state==='suspended')audioCtx.resume();
+            let duration = 1.0; 
+            if(current.noteLenMode === 'quarter') { duration = 1.0; } 
+            else if(current.noteLenMode === 'eighth') { duration = 0.5; } 
+            else if(current.noteLenMode === 'swing') {
+                let isStart = Math.abs(current.beatIdx % 1) < 0.1;
+                if(isStart) { duration = 0.66; } else { duration = 0.34; }
+            } else if(current.noteLenMode === 'half') { duration = 2.0; }
+            else if(current.noteLenMode === 'dotted') { duration = 3.0; }
+
+            if(current.beatIdx + duration > current.maxBeats + 0.1) { alert("박자가 넘칩니다!"); return; }
+
+            const tempo = parseFloat(document.getElementById('tempo-slider').value);
+            const beatTime = 0.5 / tempo;
+            playMultiSound(current.instruments, f, audioCtx.currentTime, beatTime, duration, current.beatIdx);
+            current.melody.push({f:f, idx:i, len:duration});
+            
+            let startBeat = Math.floor(current.beatIdx);
+            let endBeat = Math.floor(current.beatIdx + duration - 0.01); 
+            const startBox = document.getElementById(`beat-${startBeat}`);
+            if(startBox) {
+                const subNote = document.createElement('div');
+                subNote.className = 'sub-note filled'; subNote.style.height = `${(i+1)*10}%`; subNote.style.width = '100%';
+                startBox.appendChild(subNote); startBox.classList.add('active');
+            }
+            for(let b = startBeat + 1; b <= endBeat; b++) {
+                const nextBox = document.getElementById(`beat-${b}`);
+                if(nextBox) {
+                    const subNote = document.createElement('div');
+                    subNote.className = 'sub-note filled'; subNote.style.height = `${(i+1)*10}%`; 
+                    subNote.style.width = '100%'; subNote.style.opacity = '0.5'; 
+                    nextBox.appendChild(subNote); nextBox.classList.add('active');
+                }
+            }
+            current.beatIdx += duration;
+            if(current.beatIdx >= current.maxBeats - 0.1) { 
+                document.getElementById('status-msg').innerText="완성! 변주를 선택해보세요"; 
+                document.getElementById('save-controls').classList.remove('hidden'); 
+                previewMelody();
+            }
+        }
+
+        function resetMelody(){ 
+            current.melody=[]; current.beatIdx=0;
+            const container = document.getElementById('score-container');
+            if(container) { renderScoreUI(); }
+            document.getElementById('save-controls').classList.add('hidden'); 
+            document.getElementById('status-msg').innerText = `${current.maxBeats}박자 멜로디를 입력하세요`;
+        }
+        function previewIfReady(){ if(current.beatIdx>=3.9) previewMelody(); }
+
+        function getExpandedMelody(baseMelody, rVars, pVars) {
+            let expanded = [];
+            const getBaseNote = (nIdx) => baseMelody[nIdx % baseMelody.length];
+            const applyPitch = (noteObj, pType) => {
+                let newIdx = noteObj.idx;
+                if(pType === 'up1') newIdx += 1; else if(pType === 'up2') newIdx += 2;
+                else if(pType === 'down1') newIdx -= 1; else if(pType === 'invert') newIdx = 7 - noteObj.idx;
+                if(pType.startsWith('end-')) { newIdx = parseInt(pType.split('-')[1]); }
+                if(newIdx < 0) newIdx = 0; if(newIdx > 11) newIdx = 11;
+                return { f: scale[newIdx].f, len: noteObj.len, idx: newIdx };
+            };
+            baseMelody.forEach(n => expanded.push({f: n.f, len:n.len, idx:n.idx})); 
+
+            for(let i=0; i<3; i++) {
+                let rType = rVars[i]; let pType = pVars[i];
+                if(rType === 'ending') {
+                    let rootFreq = scale[0].f;
+                    let endNote = { f: scale[0].f, idx: 0, len: current.maxBeats * 1.0 };
+                    let finalNote = applyPitch(endNote, pType);
+                    expanded.push(finalNote); continue; 
+                }
+                let barNotes = [];
+                baseMelody.forEach(n => barNotes.push({...n}));
+                let shiftedNotes = barNotes.map(n => applyPitch(n, pType));
+                shiftedNotes.forEach(n => expanded.push(n));
+            }
+            return expanded;
+        }
+
+        function recordCurrentSegment() {
+            current.text = document.getElementById('preview-msg').value; 
+            timeline.push(JSON.parse(JSON.stringify(current)));
+            let instDisplay = current.instruments.map(i => i === 'piano' ? '🎹' : i === 'violin' ? '🎻' : i === 'cello' ? '🎻(C)' : i === 'flute' ? '🌬️' : '🪵').join('');
+            const d=document.createElement('div'); d.className='story-block'; d.style.borderLeftColor=current.color;
+            d.innerHTML=`<div><b>${current.text}</b></div><div><span style="font-size:0.8em; background:#ccc; color:white; padding:3px 8px; border-radius:10px;">${instDisplay} | ${current.rhythm}</span></div>`;
+            document.getElementById('timeline-list').appendChild(d); document.getElementById('btn-play-all').classList.remove('hidden');
+            document.getElementById('btn-stop-all').classList.remove('hidden');
+        }
+
+        function saveAndContinue() {
+            recordCurrentSegment(); resetMelody(); stopDemo();
+            document.querySelectorAll('section').forEach(s=>s.classList.add('hidden')); 
+            document.getElementById('step-1').classList.remove('hidden');
+            document.getElementById('input-when').value=''; document.getElementById('input-where').value=''; 
+            document.getElementById('input-who').value=''; document.getElementById('input-what').value='';
+            document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelector('.tab-btn').classList.add('active');
+            document.querySelectorAll('.big-input').forEach(i=>i.classList.add('hidden')); document.getElementById('input-when').classList.remove('hidden');
+        }
+
+        function saveAndFinish() {
+            recordCurrentSegment(); stopDemo(); refreshQuestion();
+            document.querySelectorAll('section').forEach(s=>s.classList.add('hidden')); 
+            document.getElementById('step-4').classList.remove('hidden');
+        }
+
+        function playKick(t){ const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(0.01,t+0.5); g.gain.setValueAtTime(1.2, t); g.gain.exponentialRampToValueAtTime(0.01,t+0.5); o.connect(g); g.connect(audioCtx.destination); g.connect(destNode); o.start(t); o.stop(t+0.5); activeNodes.push(o); }
+        function playSnare(t){ const b=audioCtx.createBuffer(1,audioCtx.sampleRate*0.1,audioCtx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; const s=audioCtx.createBufferSource(); s.buffer=b; const g=audioCtx.createGain(); const f=audioCtx.createBiquadFilter(); f.type='highpass'; f.freq=1000; g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.01,t+0.1); s.connect(f); f.connect(g); g.connect(audioCtx.destination); g.connect(destNode); s.start(t); activeNodes.push(s); }
+        function playChord(fs,t,d){ /* Muted */ } 
+
+        // --- STEP 4 FEATURES ---
+        function refreshQuestion() {
+            // Context-Aware Selection logic
+            let pool = inquiryPool[current.emo];
+            if(!pool) pool = ["이 음악을 들으면 어떤 장면이 떠오르나요?", "이 음악에 제목을 붙여주세요."];
+            
+            const randQ = pool[Math.floor(Math.random() * pool.length)];
+            const safeText = current.text ? current.text.replace(/"/g, "'") : "나의 이야기";
+            document.getElementById('inquiry-q').innerText = randQ.replace('[story]', safeText);
+        }
+        function saveText() {
+            const txt = `[EAIM 음악 탐구 일지]\n질문: ${document.getElementById('inquiry-q').innerText}\n답변: ${document.getElementById('inquiry-a').value}`;
+            const blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "music_journal.txt"; a.click();
+        }
+        function downloadAudio() {
+            alert("녹음을 시작합니다... 음악이 끝날 때까지 기다려주세요! 🎵");
+            const chunks = [];
+            const recorder = new MediaRecorder(destNode.stream);
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my_music.webm'; a.click();
+                alert("녹음 완료! 다운로드됩니다.");
+            };
+            recorder.start();
+            playWholeStory();
+            let totalBeats = 0;
+            timeline.forEach(b => { totalBeats += (b.maxBeats * 4); });
+            setTimeout(() => { recorder.stop(); }, (totalBeats * 500) + 2000); 
+        }
+    </script>
+</body>
+</html>
